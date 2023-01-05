@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start_index":"node index.js bananinha",
-    "start_par-ou-impar":"node par-ou-impar.js impar 1"
+    "start_par-ou-impar":"node par-ou-impar.js impar 1",
+    "start_pedra-papel-tesoura": "node pedra-papel-tesoura.js pedra"
   },
   "repository": {
     "type": "git",
