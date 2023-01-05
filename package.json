@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start_index":"node index.js bananinha",
-    "start_par-ou-impar":"node par-ou-impar.js impar 1",
-    "start_pedra-papel-tesoura": "node pedra-papel-tesoura.js pedra"
+    "start":"tsc && node ./build/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "\u001b[D\u001b[D\u001b[D\u001b[C\u001b[)"
+    "url": "https://github.com/patriciapossarii/labecommerce-backend"
   },
   "author": "Patricia Possari",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
 }
