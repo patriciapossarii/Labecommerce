@@ -1,4 +1,6 @@
-import { TProduct, TUser, TPurchase } from "./types";
+import { TProduct, TUser, TPurchase,PRODUCT_CATEGORY } from "./types";
+
+
 
 export const users: TUser[] = [
     {
@@ -18,14 +20,14 @@ export const products: TProduct[] = [
         name: "Pen Drive 32 GB",
         brand: "Sandisk",
         price: 53,
-        category: "Pen Drive"
+        category: PRODUCT_CATEGORY.PEN_DRIVE
     },
     {
         id: "prod2",
         name: "Headset USB",
         brand: "Logitech",
         price: 220,
-        category: "Headset"
+        category: PRODUCT_CATEGORY.HEADSET
     }
 ]
 

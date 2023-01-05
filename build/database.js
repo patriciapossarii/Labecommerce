@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.purchase = exports.products = exports.users = void 0;
+const types_1 = require("./types");
 exports.users = [
     {
         id: "user1",
@@ -18,14 +19,14 @@ exports.products = [
         name: "Pen Drive 32 GB",
         brand: "Sandisk",
         price: 53,
-        category: "Pen Drive"
+        category: types_1.PRODUCT_CATEGORY.PEN_DRIVE
     },
     {
         id: "prod2",
         name: "Headset USB",
         brand: "Logitech",
         price: 220,
-        category: "Headset"
+        category: types_1.PRODUCT_CATEGORY.HEADSET
     }
 ];
 exports.purchase = [
