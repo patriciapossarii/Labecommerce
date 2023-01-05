@@ -1,0 +1,15 @@
+{
+  "name": "labecommerce-backend",
+  "version": "1.0.0",
+  "description": "project backend labecommerce",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\u001b[D\u001b[D\u001b[D\u001b[C\u001b[)"
+  },
+  "author": "Patricia Possari",
+  "license": "ISC"
+}
