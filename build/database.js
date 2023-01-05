@@ -1,7 +1,46 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.purchase = exports.products = exports.users = void 0;
+exports.purchase = exports.products = exports.users = exports.getProductById = exports.getAllProducts = exports.createProduct = exports.getAllUsers = exports.createUser = void 0;
 const types_1 = require("./types");
+function createUser(id, email, password) {
+    const newUser = {
+        id,
+        email,
+        password
+    };
+    exports.users.push(newUser);
+    console.log("Cadastro realizado com sucesso");
+}
+exports.createUser = createUser;
+function getAllUsers() {
+    return exports.users;
+}
+exports.getAllUsers = getAllUsers;
+function createProduct(id, name, brand, price, category) {
+    const newProduct = {
+        id,
+        name,
+        brand,
+        price,
+        category
+    };
+    exports.products.push(newProduct);
+    console.log("Produto criado com sucesso");
+}
+exports.createProduct = createProduct;
+function getAllProducts() {
+    return exports.products;
+}
+exports.getAllProducts = getAllProducts;
+function getProductById(idToSearch) {
+    for (var prod of exports.products) {
+        if (prod.id === idToSearch) {
+            return prod;
+        }
+    }
+    return undefined;
+}
+exports.getProductById = getProductById;
 exports.users = [
     {
         id: "user1",
