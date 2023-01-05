@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"node index.js bananinha"
+    "start_index":"node index.js bananinha",
+    "start_par-ou-impar":"node par-ou-impar.js impar 1"
   },
   "repository": {
     "type": "git",
