@@ -1,3 +1,9 @@
+export enum PRODUCT_CATEGORY {
+    PEN_DRIVE = "Pen Drive",
+    HEADSET = "Headset",
+    WEBCAM = "Webcam"
+   }
+   
 export type TUser = {
     id: string,
     email: string,
@@ -9,7 +15,7 @@ export type TProduct = {
     name: string,
     brand: string,
     price: number,
-    category: string
+    category: PRODUCT_CATEGORY
 }
 
 export type TPurchase = {
