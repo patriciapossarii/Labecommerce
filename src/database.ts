@@ -27,12 +27,14 @@ export function createProduct(id: string, name: string, brand: string, price: nu
     products.push(newProduct)
     console.log("Produto criado com sucesso")
 }
+
+
 export function getAllProducts() {
     return products
 }
 
 
-export function getProductById(idToSearch: string): TProduct | undefined{
+export function getProductById(idToSearch: string): TProduct | undefined {
     for (var prod of products) {
         if (prod.id === idToSearch) {
             return prod
@@ -42,6 +44,42 @@ export function getProductById(idToSearch: string): TProduct | undefined{
 }
 
 
+export function queryProductsByName(q: string): TProduct | undefined {
+    for (var prod of products) {
+        if (prod.name.toLowerCase().includes(q.toLowerCase())) {
+            return prod
+        }
+    }
+    return undefined
+}
+
+
+export function createPurchase(userId: string, productId: string, quantity: number, totalPrice: number) {
+    const newPurchase: TPurchase = {
+        userId,
+        productId,
+        quantity,
+        totalPrice
+    }
+    purchase.push(newPurchase)
+    console.log("Compra realizada com sucesso")
+}
+
+export function getAllPurchasesFromUserId(q: string): TPurchase[] | undefined {
+    let filterPurchaseID = purchase.filter((purchaseById: TPurchase) => {
+        if (purchaseById.userId === q) {
+            return purchase
+        }
+    })
+
+    if (filterPurchaseID != null && filterPurchaseID.length > 0) {
+        return filterPurchaseID
+    } else {
+        return undefined
+    }
+
+
+}
 
 
 export const users: TUser[] = [
@@ -78,13 +116,19 @@ export const purchase: TPurchase[] = [
         userId: "user1",
         productId: "prod2",
         quantity: 2,
-        totalPrice: products[0].price * 2
+        totalPrice: products[1].price * 2
     },
 
+    {
+        userId: "user1",
+        productId: "prod1",
+        quantity: 3,
+        totalPrice: products[0].price * 3
+    },
     {
         userId: "user2",
         productId: "prod1",
         quantity: 2,
-        totalPrice: products[1].price * 2
+        totalPrice: products[0].price * 2
     }
 ]

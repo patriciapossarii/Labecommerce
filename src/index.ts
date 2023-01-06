@@ -1,5 +1,6 @@
 import { users, products,purchase,
-createUser, getAllUsers, createProduct, getAllProducts, getProductById } from "./database"
+createUser, getAllUsers, createProduct, getAllProducts, getProductById, 
+queryProductsByName, createPurchase, getAllPurchasesFromUserId } from "./database"
 import {PRODUCT_CATEGORY} from "./types"
 
 
@@ -8,3 +9,9 @@ import {PRODUCT_CATEGORY} from "./types"
 //createProduct("p004", "Webcam","Logitech", 600, PRODUCT_CATEGORY.WEBCAM)
 //console.table(getAllProducts())
 //console.table(getProductById("prod1"))
+//console.log(queryProductsByName("HEADSET"))
+//createPurchase("u003", "p004", 2, 1600)
+console.table(getAllPurchasesFromUserId("user1"))
+
+
+
