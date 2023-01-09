@@ -18,6 +18,21 @@ app.get('/ping', (req: Request, res: Response) => {
     res.send('Pong!')
 })
 
+app.get('/users', (req: Request, res: Response) => {
+    res.status(200).send(users)
+})
+
+app.get('/products', (req: Request, res: Response) => {
+    res.status(200).send(products)
+})
+
+app.get('/product/search', (req: Request, res: Response) => {
+    const q = req.query.q as string
+    const result = products.filter((product) => {
+        return product.name.toLowerCase().includes(q.toLowerCase())
+    })
+    res.status(200).send(result)
+})
 //createUser("u003", "beltrano@email.com", "beltrano99")
 //console.table(getAllUsers())
 //createProduct("p004", "Webcam","Logitech", 600, PRODUCT_CATEGORY.WEBCAM)
