@@ -1,7 +1,9 @@
-import { users, products,purchase,
-createUser, getAllUsers, createProduct, getAllProducts, getProductById, 
-queryProductsByName, createPurchase, getAllPurchasesFromUserId } from "./database"
-import {PRODUCT_CATEGORY} from "./types"
+import {
+    users, products, purchase,
+    createUser, getAllUsers, createProduct, getAllProducts, getProductById,
+    queryProductsByName, createPurchase, getAllPurchasesFromUserId
+} from "./database"
+import { PRODUCT_CATEGORY, TProduct, TPurchase, TUser } from "./types"
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 
@@ -33,6 +35,47 @@ app.get('/product/search', (req: Request, res: Response) => {
     })
     res.status(200).send(result)
 })
+
+app.post('/users', (req: Request, res: Response) => {
+    const { id, email, password } = req.body as TUser
+    const newUser = {
+        id,
+        email,
+        password
+    }
+    users.push(newUser)
+    res.status(201).send("Cadastro realizado com sucesso")
+})
+
+
+app.post('/products', (req: Request, res: Response) => {
+    const {  id,name,brand,price,category } = req.body as TProduct
+    const newProduct = {
+        id,
+        name,
+        brand,
+        price,
+        category
+    }
+    products.push(newProduct)
+    res.status(201).send("Produto cadastrado com sucesso")
+})
+
+app.post('/purchases', (req: Request, res: Response) => {
+    const {   userId,productId,quantity,totalPrice } = req.body as TPurchase
+    const newPurchase = {
+        userId,
+        productId,
+        quantity,
+        totalPrice
+    }
+    purchase.push(newPurchase)
+    res.status(201).send("Compra realizada com sucesso")
+})
+
+
+
+
 //createUser("u003", "beltrano@email.com", "beltrano99")
 //console.table(getAllUsers())
 //createProduct("p004", "Webcam","Logitech", 600, PRODUCT_CATEGORY.WEBCAM)
