@@ -101,7 +101,7 @@ app.delete("/user/:id", (req: Request, res: Response) => {
 
     if (userIndex >= 0) {
         users.splice(userIndex, 1)
-        res.send("User apagado com sucesso")
+        res.status(200).send("User apagado com sucesso")
     } else {
         res.send("User não encontrado")
     }
@@ -116,7 +116,7 @@ app.delete("/product/:id", (req: Request, res: Response) => {
 
     if (productIndex >= 0) {
         products.splice(productIndex, 1)
-        res.send("Produto apagado com sucesso")
+        res.status(200).send("Produto apagado com sucesso")
     } else {
         res.send("Produto não encontrado")
     }
