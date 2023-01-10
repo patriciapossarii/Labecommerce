@@ -11,7 +11,7 @@ export type TUser = {
 }
 
 export type TProduct = {
-    id: string,
+    id: string ,
     name: string,
     brand: string,
     price: number,

@@ -128,6 +128,7 @@ app.delete("/product/:id", (req: Request, res: Response) => {
 app.put("/user/:id", (req: Request, res: Response) => {
     const id = req.params.id
 
+    
     const newId = req.body.id as string | undefined
     const newEmail = req.body.email as string | undefined
     const newPassword = req.body.password as string | undefined
@@ -152,7 +153,7 @@ app.put("/product/:id", (req: Request, res: Response) => {
     const newId = req.body.id as string | undefined
     const newName = req.body.name as string | undefined
     const newBrand = req.body.brand as string | undefined
-    const newPrice = req.body.price as number
+    const newPrice = req.body.price as number 
     const newCategory = req.body.category as PRODUCT_CATEGORY | undefined
 
     const product = products.find((product) => {
@@ -161,9 +162,9 @@ app.put("/product/:id", (req: Request, res: Response) => {
 
     if (product) {
         product.id = newId || product.id
-        product.name = newName || product.name
-        product.brand = newBrand || product.brand
-        product.price = isNaN(newPrice) ? product.price : newPrice
+        product.name = newName ||  product.name
+        product.brand = newBrand ||  product.brand
+        product.price = isNaN(newPrice)? product.price : newPrice
         product.category = newCategory || product.category
         res.status(200).send("Produto atualizado com sucesso")
     } else {
