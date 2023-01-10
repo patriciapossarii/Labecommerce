@@ -61,14 +61,14 @@ export function createPurchase(userId: string, productId: string, quantity: numb
         quantity,
         totalPrice
     }
-    purchase.push(newPurchase)
+    purchases.push(newPurchase)
     console.log("Compra realizada com sucesso")
 }
 
 export function getAllPurchasesFromUserId(q: string): TPurchase[] | undefined {
-    let filterPurchaseID = purchase.filter((purchaseById: TPurchase) => {
+    let filterPurchaseID = purchases.filter((purchaseById: TPurchase) => {
         if (purchaseById.userId === q) {
-            return purchase
+            return purchases
         }
     })
 
@@ -111,7 +111,7 @@ export const products: TProduct[] = [
     }
 ]
 
-export const purchase: TPurchase[] = [
+export const purchases: TPurchase[] = [
     {
         userId: "user1",
         productId: "prod2",

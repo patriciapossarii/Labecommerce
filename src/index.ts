@@ -1,5 +1,5 @@
 import {
-    users, products, purchase,
+    users, products, purchases,
     createUser, getAllUsers, createProduct, getAllProducts, getProductById,
     queryProductsByName, createPurchase, getAllPurchasesFromUserId
 } from "./database"
@@ -49,7 +49,7 @@ app.post('/users', (req: Request, res: Response) => {
 
 
 app.post('/products', (req: Request, res: Response) => {
-    const {  id,name,brand,price,category } = req.body as TProduct
+    const { id, name, brand, price, category } = req.body as TProduct
     const newProduct = {
         id,
         name,
@@ -62,20 +62,34 @@ app.post('/products', (req: Request, res: Response) => {
 })
 
 app.post('/purchases', (req: Request, res: Response) => {
-    const {   userId,productId,quantity,totalPrice } = req.body as TPurchase
+    const { userId, productId, quantity, totalPrice } = req.body as TPurchase
     const newPurchase = {
         userId,
         productId,
         quantity,
         totalPrice
     }
-    purchase.push(newPurchase)
+    purchases.push(newPurchase)
     res.status(201).send("Compra realizada com sucesso")
 })
 
 
+app.get("/products/:id", (req: Request, res: Response) => {
+    const id = req.params.id
+    const result = products.find((product) => {
+        return product.id === id
+    })
+    res.status(200).send(result)
+})
 
+app.get("/users/:id/purchases", (req: Request, res: Response) => {
+    const id = req.params.id
+    const result = purchases.filter((purchase) => {
+        return purchase.userId === id
+    })
+    res.status(200).send(result)
 
+})
 //createUser("u003", "beltrano@email.com", "beltrano99")
 //console.table(getAllUsers())
 //createProduct("p004", "Webcam","Logitech", 600, PRODUCT_CATEGORY.WEBCAM)
