@@ -90,6 +90,38 @@ app.get("/users/:id/purchases", (req: Request, res: Response) => {
     res.status(200).send(result)
 
 })
+
+
+app.delete("/user/:id", (req: Request, res: Response) => {
+    const id = req.params.id
+    const userIndex = users.findIndex((user) => {
+        return user.id === id
+    })
+    console.log("index", userIndex)
+
+    if (userIndex >= 0) {
+        users.splice(userIndex, 1)
+        res.send("User apagado com sucesso")
+    } else {
+        res.send("User não encontrado")
+    }
+})
+
+
+app.delete("/product/:id", (req: Request, res: Response) => {
+    const id = req.params.id
+    const productIndex = products.findIndex((product) => {
+        return product.id === id
+    })
+
+    if (productIndex >= 0) {
+        products.splice(productIndex, 1)
+        res.send("Produto apagado com sucesso")
+    } else {
+        res.send("Produto não encontrado")
+    }
+})
+
 //createUser("u003", "beltrano@email.com", "beltrano99")
 //console.table(getAllUsers())
 //createProduct("p004", "Webcam","Logitech", 600, PRODUCT_CATEGORY.WEBCAM)

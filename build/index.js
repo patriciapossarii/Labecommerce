@@ -75,4 +75,32 @@ app.get("/users/:id/purchases", (req, res) => {
     });
     res.status(200).send(result);
 });
+app.delete("/user/:id", (req, res) => {
+    const id = req.params.id;
+    const userIndex = database_1.users.findIndex((user) => {
+        return user.id === id;
+    });
+    console.log("index", userIndex);
+    if (userIndex >= 0) {
+        database_1.users.splice(userIndex, 1);
+        res.send("User apagado com sucesso");
+    }
+    else {
+        res.send("User não encontrado");
+    }
+});
+app.delete("/product/:id", (req, res) => {
+    const id = req.params.id;
+    const productIndex = database_1.products.findIndex((product) => {
+        return product.id === id;
+    });
+    console.log("index", productIndex);
+    if (productIndex >= 0) {
+        database_1.products.splice(productIndex, 1);
+        res.send("Produto apagado com sucesso");
+    }
+    else {
+        res.send("Produto não encontrado");
+    }
+});
 //# sourceMappingURL=index.js.map
