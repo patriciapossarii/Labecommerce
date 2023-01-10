@@ -122,6 +122,56 @@ app.delete("/product/:id", (req: Request, res: Response) => {
     }
 })
 
+
+
+
+app.put("/user/:id", (req: Request, res: Response) => {
+    const id = req.params.id
+
+    const newId = req.body.id as string | undefined
+    const newEmail = req.body.email as string | undefined
+    const newPassword = req.body.password as string | undefined
+
+    const user = users.find((user) => {
+        return user.id === id
+    })
+
+    if (user) {
+        user.id = newId || user.id
+        user.email = newEmail || user.email
+        user.password = newPassword || user.password
+        res.status(200).send("Cadastro atualizado com sucesso")
+    } else {
+        res.status(404).send("Usuário não encontrado")
+    }
+})
+
+app.put("/product/:id", (req: Request, res: Response) => {
+    const id = req.params.id
+
+    const newId = req.body.id as string | undefined
+    const newName = req.body.name as string | undefined
+    const newBrand = req.body.brand as string | undefined
+    const newPrice = req.body.price as number
+    const newCategory = req.body.category as PRODUCT_CATEGORY | undefined
+
+    const product = products.find((product) => {
+        return product.id === id
+    })
+
+    if (product) {
+        product.id = newId || product.id
+        product.name = newName || product.name
+        product.brand = newBrand || product.brand
+        product.price = isNaN(newPrice) ? product.price : newPrice
+        product.category = newCategory || product.category
+        res.status(200).send("Produto atualizado com sucesso")
+    } else {
+        res.status(404).send("Produto não encontrado")
+    }
+})
+
+
 //createUser("u003", "beltrano@email.com", "beltrano99")
 //console.table(getAllUsers())
 //createProduct("p004", "Webcam","Logitech", 600, PRODUCT_CATEGORY.WEBCAM)

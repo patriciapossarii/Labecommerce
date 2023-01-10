@@ -83,7 +83,7 @@ app.delete("/user/:id", (req, res) => {
     console.log("index", userIndex);
     if (userIndex >= 0) {
         database_1.users.splice(userIndex, 1);
-        res.send("User apagado com sucesso");
+        res.status(200).send("User apagado com sucesso");
     }
     else {
         res.send("User não encontrado");
@@ -94,13 +94,52 @@ app.delete("/product/:id", (req, res) => {
     const productIndex = database_1.products.findIndex((product) => {
         return product.id === id;
     });
-    console.log("index", productIndex);
     if (productIndex >= 0) {
         database_1.products.splice(productIndex, 1);
-        res.send("Produto apagado com sucesso");
+        res.status(200).send("Produto apagado com sucesso");
     }
     else {
         res.send("Produto não encontrado");
+    }
+});
+app.put("/user/:id", (req, res) => {
+    const id = req.params.id;
+    const newId = req.body.id;
+    const newEmail = req.body.email;
+    const newPassword = req.body.password;
+    const user = database_1.users.find((user) => {
+        return user.id === id;
+    });
+    if (user) {
+        user.id = newId || user.id;
+        user.email = newEmail || user.email;
+        user.password = newPassword || user.password;
+        res.status(200).send("Cadastro atualizado com sucesso");
+    }
+    else {
+        res.status(404).send("Usuário não encontrado");
+    }
+});
+app.put("/product/:id", (req, res) => {
+    const id = req.params.id;
+    const newId = req.body.id;
+    const newName = req.body.name;
+    const newBrand = req.body.brand;
+    const newPrice = req.body.price;
+    const newCategory = req.body.category;
+    const product = database_1.products.find((product) => {
+        return product.id === id;
+    });
+    if (product) {
+        product.id = newId || product.id;
+        product.name = newName || product.name;
+        product.brand = newBrand || product.brand;
+        product.price = isNaN(newPrice) ? product.price : newPrice;
+        product.category = newCategory || product.category;
+        res.status(200).send("Produto atualizado com sucesso");
+    }
+    else {
+        res.status(404).send("Produto não encontrado");
     }
 });
 //# sourceMappingURL=index.js.map
