@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.purchase = exports.products = exports.users = exports.getAllPurchasesFromUserId = exports.createPurchase = exports.queryProductsByName = exports.getProductById = exports.getAllProducts = exports.createProduct = exports.getAllUsers = exports.createUser = void 0;
+exports.purchases = exports.products = exports.users = exports.getAllPurchasesFromUserId = exports.createPurchase = exports.queryProductsByName = exports.getProductById = exports.getAllProducts = exports.createProduct = exports.getAllUsers = exports.createUser = void 0;
 const types_1 = require("./types");
 function createUser(id, email, password) {
     const newUser = {
@@ -57,14 +57,14 @@ function createPurchase(userId, productId, quantity, totalPrice) {
         quantity,
         totalPrice
     };
-    exports.purchase.push(newPurchase);
+    exports.purchases.push(newPurchase);
     console.log("Compra realizada com sucesso");
 }
 exports.createPurchase = createPurchase;
 function getAllPurchasesFromUserId(q) {
-    let filterPurchaseID = exports.purchase.filter((purchaseById) => {
+    let filterPurchaseID = exports.purchases.filter((purchaseById) => {
         if (purchaseById.userId === q) {
-            return exports.purchase;
+            return exports.purchases;
         }
     });
     if (filterPurchaseID != null && filterPurchaseID.length > 0) {
@@ -102,7 +102,7 @@ exports.products = [
         category: types_1.PRODUCT_CATEGORY.HEADSET
     }
 ];
-exports.purchase = [
+exports.purchases = [
     {
         userId: "user1",
         productId: "prod2",
