@@ -86,11 +86,11 @@ export const users: TUser[] = [
     {
         id: "user1",
         email: "user1@email.com",
-        password: "*****"
+        password: "S3nha"
     }, {
         id: "user2",
         email: "user2@email.com",
-        password: "*****"
+        password: "S3nha"
     }
 ]
 
