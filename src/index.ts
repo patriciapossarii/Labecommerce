@@ -485,7 +485,6 @@ app.put("/product/:id", (req: Request, res: Response) => {
 
 
         const newName = req.body.name
-        console.log(newName)
         if (newName !== undefined) {
             if (newName.length < 1) {
                 res.status(400)

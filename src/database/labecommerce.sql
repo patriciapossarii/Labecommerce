@@ -1,4 +1,4 @@
--- Active: 1673873948015@@127.0.0.1@3306
+-- Active: 1673894729956@@127.0.0.1@3306
 CREATE TABLE users(
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     email TEXT NOT NULL,
@@ -13,10 +13,8 @@ CREATE TABLE products(
 );
 PRAGMA table_info('users');
 PRAGMA table_info('products');
-SELECT *
-FROM users;
-SELECT *
-FROM products;
+
+
 INSERT INTO users (id, email, password)
 values("user01", "user01@email.com", "S3nha1"),
     ("user02", "user02@email.com", "S3nha2"),
@@ -28,3 +26,15 @@ values("prod01", "Pen Drive 32GB", "SanDisk", 34, "Pen Drive"),
 ("prod03", "SSD 960GB", "Kingston", 450, "SSD"),
 ("prod04", "Suporte Monitor", "Elg", 200, "Suporte"),
 ("prod05", "Hub USB, 7 portas", "Husky", 60, "Hub");
+
+-- Get All Users
+SELECT *
+FROM users AS getAllUsers;
+
+-- Get All Products
+SELECT *
+FROM products AS getAllProducts;
+
+-- Search Product by name
+SELECT * FROM products AS serchProductByName
+WHERE name = "Pen Drive 32GB";
