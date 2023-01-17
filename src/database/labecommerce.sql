@@ -29,11 +29,24 @@ values("prod01", "Pen Drive 32GB", "SanDisk", 34, "Pen Drive"),
 
 -- Get All Users
 SELECT *
-FROM users;
+FROM users
+ORDER BY email ASC;
 
 -- Get All Products
 SELECT *
 FROM products;
+
+-- Get All Products V1 - ordenando preço em crescente e resultado a partir do primeiro item até 20.
+SELECT *
+FROM products
+ORDER BY price ASC
+LIMIT 20 OFFSET 1;
+
+-- Get All Products V2 - Produtos com intervalo de valores
+SELECT *
+FROM products
+WHERE price >=50 AND price <=200
+ORDER BY price ASC;
 
 -- Search Product by name
 SELECT * FROM products
@@ -54,5 +67,17 @@ WHERE id = "prod01";
 -- Delete User by id
 DELETE FROM users
 WHERE id = 'user01';
+
+--Delete Product by id
+DELETE FROM products
+WHERE id = 'prod01';
+--Edit User by id
+UPDATE users
+SET email = "emailuser02@email.com"
+WHERE id = 'user02';
+--Edit Product by id
+UPDATE products
+SET price = 130
+WHERE id = 'prod02';
 
 
