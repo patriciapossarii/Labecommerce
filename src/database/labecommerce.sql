@@ -1,4 +1,4 @@
--- Active: 1673873948015@@127.0.0.1@3306
+-- Active: 1673894729956@@127.0.0.1@3306
 CREATE TABLE users(
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
     email TEXT NOT NULL,
@@ -13,10 +13,8 @@ CREATE TABLE products(
 );
 PRAGMA table_info('users');
 PRAGMA table_info('products');
-SELECT *
-FROM users;
-SELECT *
-FROM products;
+
+
 INSERT INTO users (id, email, password)
 values("user01", "user01@email.com", "S3nha1"),
     ("user02", "user02@email.com", "S3nha2"),
@@ -28,3 +26,58 @@ values("prod01", "Pen Drive 32GB", "SanDisk", 34, "Pen Drive"),
 ("prod03", "SSD 960GB", "Kingston", 450, "SSD"),
 ("prod04", "Suporte Monitor", "Elg", 200, "Suporte"),
 ("prod05", "Hub USB, 7 portas", "Husky", 60, "Hub");
+
+-- Get All Users
+SELECT *
+FROM users
+ORDER BY email ASC;
+
+-- Get All Products
+SELECT *
+FROM products;
+
+-- Get All Products V1 - ordenando preço em crescente e resultado a partir do primeiro item até 20.
+SELECT *
+FROM products
+ORDER BY price ASC
+LIMIT 20 OFFSET 1;
+
+-- Get All Products V2 - Produtos com intervalo de valores
+SELECT *
+FROM products
+WHERE price >=50 AND price <=200
+ORDER BY price ASC;
+
+-- Search Product by name
+SELECT * FROM products
+WHERE name = "Pen Drive 32GB";
+
+--Create User
+INSERT INTO users (id, email, password)
+values("user04", "user04@email.com", "S3nha4");
+
+--Create Product
+INSERT INTO products(id,name,brand,price,category)
+values("prod06", "Pen Drive 16GB", "SanDisk", 30, "Pen Drive");
+
+--Get Products by id
+SELECT * FROM products
+WHERE id = "prod01";
+
+-- Delete User by id
+DELETE FROM users
+WHERE id = 'user01';
+
+--Delete Product by id
+DELETE FROM products
+WHERE id = 'prod01';
+--Edit User by id
+UPDATE users
+SET email = "emailuser02@email.com"
+WHERE id = 'user02';
+--Edit Product by id
+UPDATE products
+SET price = 130
+WHERE id = 'prod02';
+
+
