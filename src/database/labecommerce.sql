@@ -29,12 +29,30 @@ values("prod01", "Pen Drive 32GB", "SanDisk", 34, "Pen Drive"),
 
 -- Get All Users
 SELECT *
-FROM users AS getAllUsers;
+FROM users;
 
 -- Get All Products
 SELECT *
-FROM products AS getAllProducts;
+FROM products;
 
 -- Search Product by name
-SELECT * FROM products AS serchProductByName
+SELECT * FROM products
 WHERE name = "Pen Drive 32GB";
+
+--Create User
+INSERT INTO users (id, email, password)
+values("user04", "user04@email.com", "S3nha4");
+
+--Create Product
+INSERT INTO products(id,name,brand,price,category)
+values("prod06", "Pen Drive 16GB", "SanDisk", 30, "Pen Drive");
+
+--Get Products by id
+SELECT * FROM products
+WHERE id = "prod01";
+
+-- Delete User by id
+DELETE FROM users
+WHERE id = 'user01';
+
+
