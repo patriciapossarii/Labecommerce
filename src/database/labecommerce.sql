@@ -27,6 +27,27 @@ values("prod01", "Pen Drive 32GB", "SanDisk", 34, "Pen Drive"),
 ("prod04", "Suporte Monitor", "Elg", 200, "Suporte"),
 ("prod05", "Hub USB, 7 portas", "Husky", 60, "Hub");
 
+INSERT INTO products(id,name,brand,price,category)
+values
+("prod07", "SSD 240GB", "Crucial", 175, "SSD"),
+("prod08", "Mouse sem fio", "Logitech", 79, "Mouse"),
+("prod09", "Teclado sem fio", "Logitech", 683, "Teclado"),
+("prod10", "Mouse PS2", "Vinik", 25, "Mouse"),
+("prod11", "Mouse USB", "Logitech", 32, "Mouse"),
+("prod12", "Teclado USB", "HP", 108, "Teclado"),
+("prod13", "Chaveador KVM 8 Portas", "Trendnet", 2500, "Chaveador"),
+("prod14", "Hub Usb 8 Plus Ethernet Rj45", "Anywhere", 17000, "Hub"),
+("prod15", "Rotulador Eletronico", "Epson", 255, "Rotulador"),
+("prod16", "Impressora Termica", "Epson", 700, "Impressora Térmica"),
+("prod17", "Leitor Código de Barras - 2D", "Motorolla", 700, "Leitor de código de barra"),
+("prod18", "Switch SG550x - 24 Portas", "Cisco", 22000, "Switch"),
+("prod19", "Tablet", "Sanssung", 2889, "Tablet"),
+("prod20", "Cabo HDMI MxM", "PIX", 39, "Cabo"),
+("prod21", "Cabo HDMI M  x VGA M", "SanDisk", 20, "Cabo"),
+("prod22", "Monitor 18.5", "Dell", 622, "Monitor");
+
+
+
 -- Get All Users
 SELECT *
 FROM users
@@ -50,7 +71,7 @@ ORDER BY price ASC;
 
 -- Search Product by name
 SELECT * FROM products
-WHERE name = "Pen Drive 32GB";
+WHERE name LIKE "%Pen Drive%";
 
 --Create User
 INSERT INTO users (id, email, password)
