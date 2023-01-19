@@ -73,7 +73,7 @@ WHERE name LIKE "%Cabo%";
 
 --Create User
 INSERT INTO users (id, email, password)
-values("user04", "user04@email.com", "S3nha4");
+values("user01", "user01@email.com", "S3nha1");
 --Create Product
 INSERT INTO products(id, name, brand, price, category)
 values(
@@ -138,3 +138,18 @@ quantity INTEGER NOT NULL,
 FOREIGN KEY (purchase_id) REFERENCES purchases(id),
 FOREIGN KEY (product_id) REFERENCES products(id)
 );
+
+INSERT INTO purchases_products(purchase_id, product_id, quantity)
+VALUES
+("pur01", "prod01", 2),
+("pur02", "prod02", 1),
+("pur03", "prod01", 4),
+("pur04", "prod03", 3);
+SELECT * FROM purchases_products;
+SELECT * FROM purchases_products pp
+LEFT JOIN purchases pu ON pp.purchase_id = pu.id
+LEFT JOIN products pr ON pp.product_id = pr.id;
+
+
+
+
