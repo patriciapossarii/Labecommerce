@@ -6,6 +6,7 @@ import {
 import { PRODUCT_CATEGORY, TProduct, TPurchase, TUser } from "./types"
 import express, { Request, Response } from 'express'
 import cors from 'cors'
+import { db } from "./database/knex"
 
 const app = express()
 
@@ -22,14 +23,22 @@ app.get('/ping', (req: Request, res: Response) => {
 
 //////////////////////////////////////////  USERS //////////////////////////////////////////
 //  GET  ALL USERS
-app.get('/users', (req: Request, res: Response) => {
+app.get('/users', async (req: Request, res: Response) => {
     try {
-        res.status(200).send(users)
+        const result = await db.raw(`SELECT * FROM users`)
+        res.status(200).send(result)
     } catch (error) {
-        if (res.statusCode === 200) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
             res.status(500)
         }
-        res.send(error.message)
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
     }
 })
 
@@ -195,7 +204,7 @@ app.put("/user/:id", (req: Request, res: Response) => {
 app.delete("/user/:id", (req: Request, res: Response) => {
     try {
         const { id } = req.params
-    
+
         if (id !== undefined) {
 
             if (id === ":id") {
@@ -224,7 +233,7 @@ app.delete("/user/:id", (req: Request, res: Response) => {
         const userInPurchase = purchases.filter((purchase) => {
             return purchase.userId === id
         })
-     
+
         if (userInPurchase.length > 0) {
             res.status(422)
             throw new Error(" 'id' cadastrado em uma 'purchases'")
@@ -253,14 +262,22 @@ app.delete("/user/:id", (req: Request, res: Response) => {
 
 //////////////////////////////////////////  PRODUCTS //////////////////////////////////////////
 // GET ALL PRODUCTS
-app.get('/products', (req: Request, res: Response) => {
+app.get('/products', async (req: Request, res: Response) => {
     try {
-        res.status(200).send(products)
+        const result = await db.raw(`SELECT * FROM products;`)
+        res.status(200).send(result)
     } catch (error) {
-        if (res.statusCode === 200) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
             res.status(500)
         }
-        res.send(error.message)
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
     }
 })
 
@@ -423,30 +440,45 @@ app.get("/products/:id", (req: Request, res: Response) => {
 })
 
 // SEARCH PRODUCT BY NAME
-app.get('/product/search', (req: Request, res: Response) => {
+app.get('/product/search', async (req: Request, res: Response) => {
     try {
         const q = req.query.q as string
 
         if (q !== undefined) {
-            if (q.length < 1) {
-                res.status(400)
-                throw new Error("A busca de produto deve possuir pelo menos um caractere")
-            }
             if (typeof q !== "string") {
                 res.status(400)
                 throw new Error("`A busca deve ser uma string")
             }
+            if (q.length < 1) {
+                res.status(400)
+                throw new Error("A busca de produto deve possuir pelo menos um caractere")
+            }
+         
         }
+/*
         const result = products.filter((product) => {
             return product.name.toLowerCase().includes(q.toLowerCase())
         })
+
+        */
+       const result = await db.raw(`SELECT *
+       FROM products
+       WHERE name LIKE "%${q}%";`)
+
         res.status(200).send(result)
 
     } catch (error) {
-        if (res.statusCode === 200) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
             res.status(500)
         }
-        res.send(error.message)
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
     }
 })
 
@@ -604,7 +636,7 @@ app.delete("/product/:id", (req: Request, res: Response) => {
         const productInPurchase = purchases.filter((purchase) => {
             return purchase.productId === id
         })
-     
+
         if (productInPurchase.length > 0) {
             res.status(422)
             throw new Error(" 'id' cadastrado em uma 'purchases'")
