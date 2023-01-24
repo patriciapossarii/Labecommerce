@@ -26,7 +26,7 @@ app.get('/ping', (req, res) => {
 });
 app.get('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield knex_1.db.raw(`SELECT * FROM users`);
+        const result = yield (0, knex_1.db)("users");
         res.status(200).send(result);
     }
     catch (error) {
@@ -58,9 +58,7 @@ app.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 res.status(400);
                 throw new Error("'id' do usuário inválido. Deve conter de 5 a 8 caracteres");
             }
-            const clientExists = yield knex_1.db.raw(`SELECT *
-            FROM users
-            WHERE id = "${id}";`);
+            const clientExists = yield (0, knex_1.db)("users").where({ id: id });
             if (clientExists.length >= 1) {
                 res.status(400);
                 throw new Error("'id' do usuário já existente.");
@@ -90,9 +88,7 @@ app.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 res.status(400);
                 throw new Error("'email'do usuário em formato inválido. Ex.: 'exemplo@exemplo.com'.");
             }
-            const emailExists = yield knex_1.db.raw(`SELECT *
-            FROM users
-            WHERE email = "${email}";`);
+            const emailExists = yield (0, knex_1.db)("users").where({ email: email });
             if (emailExists.length >= 1) {
                 res.status(400);
                 throw new Error("'email' do usuário já existente.");
@@ -112,10 +108,7 @@ app.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             res.status(400);
             throw new Error("'password' do usuário deve ser informado.");
         }
-        yield knex_1.db.raw(`
-        INSERT INTO users (id, name, email, password)
-        VALUES("${id}", "${name}","${email}", "${password}")
-        `);
+        yield (0, knex_1.db)("users").insert({ id, name, email, password });
         res.status(201).send("Cadastro realizado com sucesso");
     }
     catch (error) {
@@ -135,6 +128,9 @@ app.put("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const { id } = req.params;
         const newId = req.body.id;
+        const newName = req.body.name;
+        const newEmail = req.body.email;
+        const newPassword = req.body.password;
         if (newId !== undefined) {
             if (typeof newId !== "string") {
                 res.status(400);
@@ -148,25 +144,17 @@ app.put("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 res.status(400);
                 throw new Error("`id`do usuário inválido. Deve conter de 5 a 8 caracteres");
             }
-            const [idOldExists] = yield knex_1.db.raw(`SELECT *
-            FROM users
-            WHERE id = "${newId}";`);
-            console.log(idOldExists);
+            const [idOldExists] = yield (0, knex_1.db)("users").where({ id: id });
             if (!idOldExists) {
                 res.status(404);
                 throw new Error("'id' do usuário não existe.");
             }
-            const [idOthersClienttExists] = yield knex_1.db.raw(`SELECT *
-           FROM users
-           WHERE id != "${newId}" 
-           AND id="${newId}";`);
-            console.log("2", idOthersClienttExists);
+            const [idOthersClienttExists] = yield (0, knex_1.db)("users").where("id", "!=", id).andWhere("id", "=", newId);
             if (idOthersClienttExists) {
                 res.status(404);
                 throw new Error("'id' do usuário já existente.");
             }
         }
-        const newName = req.body.name;
         if (newName !== undefined) {
             if (typeof newName !== "string") {
                 res.status(400);
@@ -177,23 +165,19 @@ app.put("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 throw new Error("'name' do usuário inválido. Deve conter no mínimo 2 caracteres");
             }
         }
-        const newEmail = req.body.email;
         if (newEmail !== undefined) {
             const expression = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
             if (expression.test(newEmail) != true) {
                 res.status(400);
                 throw new Error("'email' do usuário no formato inválido. Ex.: 'exemplo@exemplo.com'.");
             }
-            const [mailOthersClienttExists] = yield knex_1.db.raw(`SELECT *
-            FROM users
-            WHERE id != "${newId}" 
-            AND email = "${newEmail}";`);
+            const [mailOthersClienttExists] = yield (0, knex_1.db)("users").where("id", "!=", id).andWhere("email", "=", newEmail);
+            console.log(mailOthersClienttExists);
             if (mailOthersClienttExists) {
                 res.status(400);
                 throw new Error("'email' de usuário já existe.");
             }
         }
-        const newPassword = req.body.password;
         if (newPassword !== undefined) {
             if (typeof newPassword != "string") {
                 res.status(400);
@@ -208,23 +192,76 @@ app.put("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(400);
             throw new Error("'password' deve ser informado.");
         }
-        const [user] = yield knex_1.db.raw(`SELECT *
-           FROM users
-           WHERE id = "${newId}";`);
+        const [user] = yield (0, knex_1.db)("users").where({ id: id });
         if (user) {
-            yield knex_1.db.raw(`
-            UPDATE users 
-            SET 
-            id = "${newId || user.id}",
-            name = "${newName || user.name}",
-            email = "${newEmail || user.email}",
-            password = "${newPassword || user.password}"
-            WHERE id = "${id}";
-            `);
+            const updateUser = {
+                id: newId || user.id,
+                name: newName || user.name,
+                email: newEmail || user.email,
+                password: newPassword || user.password
+            };
+            yield (0, knex_1.db)("users").update(updateUser).where({ id: id });
             res.status(200).send("Cadastro atualizado com sucesso");
         }
         else {
             res.status(404).send("Usuário não encontrado");
+        }
+    }
+    catch (error) {
+        console.log(error);
+        if (req.statusCode === 200) {
+            res.status(500);
+        }
+        if (error instanceof Error) {
+            res.send(error.message);
+        }
+        else {
+            res.send("Erro inesperado");
+        }
+    }
+}));
+app.delete("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        if (id !== undefined) {
+            if (id === ":id") {
+                res.status(400);
+                throw new Error("'id' do usuário não pode ser vazio.");
+            }
+            if (typeof id !== "string") {
+                res.status(400);
+                throw new Error("'id' do usuário deve ser string.");
+            }
+            if (id[0] != "u" || id[1] != "s" || id[2] != "e" || id[3] != "r") {
+                res.status(400);
+                throw new Error("'id' do usuário inválido. Deve iniciar com 'user'");
+            }
+            if (id.length < 5 || id.length > 10) {
+                res.status(400);
+                throw new Error("'id' do usuário inválido. Deve conter de 5 a 8 caracteres");
+            }
+        }
+        else {
+            res.status(400);
+            throw new Error("'id' do usuário deve ser informado.");
+        }
+        const [userInPurchase] = yield knex_1.db.raw(`SELECT *
+        FROM purchases
+        WHERE buyer = "${id}";`);
+        if (userInPurchase) {
+            res.status(422);
+            throw new Error(" 'id' do usuário cadastrado em uma 'purchases'");
+        }
+        const [userIndex] = yield knex_1.db.raw(`SELECT *
+        FROM users
+        WHERE id = "${id}";`);
+        if (userIndex) {
+            yield knex_1.db.raw(`DELETE FROM users 
+        WHERE id = "${id}";`);
+            res.status(200).send("Usuário apagado com sucesso");
+        }
+        else {
+            res.send("User não encontrado");
         }
     }
     catch (error) {
@@ -300,20 +337,6 @@ app.post('/products', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             res.status(400);
             throw new Error("'name' do produto deve ser informado.");
         }
-        if (description !== undefined) {
-            if (description.length < 1) {
-                res.status(400);
-                throw new Error("'description' do produto não pode ser vazio.");
-            }
-            if (typeof description !== "string") {
-                res.status(400);
-                throw new Error("'description'do produto deve ser string.");
-            }
-        }
-        else {
-            res.status(400);
-            throw new Error("'description' do produto deve ser informado.");
-        }
         if (price !== undefined) {
             if (typeof price !== "number") {
                 res.status(400);
@@ -327,6 +350,20 @@ app.post('/products', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         else {
             res.status(400);
             throw new Error("'price' do produto deve ser informado.");
+        }
+        if (description !== undefined) {
+            if (description.length < 1) {
+                res.status(400);
+                throw new Error("'description' do produto não pode ser vazio.");
+            }
+            if (typeof description !== "string") {
+                res.status(400);
+                throw new Error("'description'do produto deve ser string.");
+            }
+        }
+        else {
+            res.status(400);
+            throw new Error("'description' do produto deve ser informado.");
         }
         if (image_url !== undefined) {
             if (typeof image_url !== "string") {
@@ -437,6 +474,110 @@ app.get('/product/search', (req, res) => __awaiter(void 0, void 0, void 0, funct
         else {
             res.send("Erro inesperado");
         }
+    }
+}));
+app.put("/product/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const newId = req.body.id;
+        const newName = req.body.name;
+        const newPrice = req.body.price;
+        const newDescription = req.body.description;
+        const newImage_url = req.body.image_url;
+        if (newId !== undefined) {
+            if (typeof newId !== "string") {
+                res.status(400);
+                throw new Error("'id' deve ser string.");
+            }
+            if (id[0] != "p" || id[1] != "r" || id[2] != "o" || id[3] != "d") {
+                res.status(400);
+                throw new Error("'id' do produto inválido. Deve iniciar com 'prod'");
+            }
+            if (newId.length < 5 || newId.length > 8) {
+                res.status(400);
+                throw new Error("`id`do produto inválido. Deve conter de 5 a 8 caracteres");
+            }
+            const idOldExists = yield knex_1.db.raw(`SELECT *
+           FROM products
+           WHERE id = "${id}";`);
+            if (!idOldExists) {
+                res.status(404);
+                throw new Error("'id' do produto não existe.");
+            }
+            const idOthersProductstExists = yield knex_1.db.raw(`SELECT *
+            FROM products
+            WHERE id != "${id}" 
+            AND id = "${newId}";`);
+            if (idOthersProductstExists) {
+                res.status(404);
+                throw new Error("'id' do produto já existente.");
+            }
+        }
+        if (newName !== undefined) {
+            if (newName.length < 1) {
+                res.status(400);
+                throw new Error("'name' do produto não pode ser vazio.");
+            }
+            if (typeof newName !== "string") {
+                res.status(400);
+                throw new Error("'name' do produto deve ser string.");
+            }
+        }
+        if (newPrice !== undefined) {
+            if (typeof newPrice !== "number") {
+                res.status(400);
+                throw new Error("'price' do produto deve ser number.");
+            }
+            if (newPrice < 0) {
+                res.status(400);
+                throw new Error("'price' do produto não pode ser numero negativo.");
+            }
+        }
+        if (newDescription !== undefined) {
+            if (typeof newDescription !== "string") {
+                res.status(400);
+                throw new Error("'description'do produto deve ser string.");
+            }
+            if (newDescription.length < 1) {
+                res.status(400);
+                throw new Error("'description' do produto não pode ser vazio.");
+            }
+        }
+        if (newImage_url !== undefined) {
+            if (typeof newImage_url !== "string") {
+                res.status(400);
+                throw new Error("'image_url' do produto deve ser string.");
+            }
+            if (newImage_url.length < 1) {
+                res.status(400);
+                throw new Error("'image_url' do produto não pode ser vazio.");
+            }
+        }
+        const [product] = yield knex_1.db.raw(`SELECT *
+        FROM products 
+        WHERE id = "${id}";`);
+        if (product) {
+            yield knex_1.db.raw(`
+            UPDATE products 
+            SET
+            id = "${newId || product.id}",
+            name = "${newName || product.name}",
+            price = ${isNaN(newPrice) ? product.price : newPrice},
+            description = "${newDescription || product.description}",
+            image_url = "${newImage_url || product.image_url}" 
+            WHERE id="${id}"
+            `);
+            res.status(200).send("Produto atualizado com sucesso");
+        }
+        else {
+            res.status(404).send("Produto não encontrado");
+        }
+    }
+    catch (error) {
+        if (res.statusCode === 200) {
+            res.status(500);
+        }
+        res.send(error.message);
     }
 }));
 app.delete("/product/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
