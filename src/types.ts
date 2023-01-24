@@ -2,25 +2,31 @@ export enum PRODUCT_CATEGORY {
     PEN_DRIVE = "Pen Drive",
     HEADSET = "Headset",
     WEBCAM = "Webcam"
-   }
-   
+}
+
 export type TUser = {
     id: string,
+    name: string,
     email: string,
-    password: string
+    password: string,
+    created_at:string
 }
 
 export type TProduct = {
-    id: string ,
+    id: string,
     name: string,
-    brand: string,
     price: number,
-    category: PRODUCT_CATEGORY
+    description: string,
+    image_url: string
 }
 
 export type TPurchase = {
-    userId: string,
-    productId: string,
-    quantity: number,
-    totalPrice: number
+    id: string,
+    buyer: string,
+    total_price: number,
+    created_at: string,
+    paid: number,
+
 }
+
+

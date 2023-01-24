@@ -283,3 +283,6 @@ SELECT purchases_products.purchase_id AS purchaseId,
 FROM purchases_products
     LEFT JOIN products ON purchases_products.product_id = products.id
     LEFT JOIN purchases ON purchases_products.purchase_id = purchases.id;
+
+    DELETE FROM users
+WHERE id = "id_p06";

@@ -2,9 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.purchases = exports.products = exports.users = exports.getAllPurchasesFromUserId = exports.createPurchase = exports.queryProductsByName = exports.getProductById = exports.getAllProducts = exports.createProduct = exports.getAllUsers = exports.createUser = void 0;
 const types_1 = require("./types");
-function createUser(id, email, password) {
+function createUser(id, name, email, password) {
     const newUser = {
         id,
+        name,
         email,
         password
     };
@@ -77,11 +78,13 @@ function getAllPurchasesFromUserId(q) {
 exports.getAllPurchasesFromUserId = getAllPurchasesFromUserId;
 exports.users = [
     {
-        id: "user1",
+        id: "id_U01",
+        name: "user01 user01",
         email: "user1@email.com",
         password: "S3nha"
     }, {
-        id: "user2",
+        id: "id_U02",
+        name: "user02",
         email: "user2@email.com",
         password: "S3nha"
     }
@@ -104,19 +107,19 @@ exports.products = [
 ];
 exports.purchases = [
     {
-        userId: "user1",
+        userId: "id_U01",
         productId: "prod2",
         quantity: 2,
         totalPrice: exports.products[1].price * 2
     },
     {
-        userId: "user1",
+        userId: "id_U01",
         productId: "prod1",
         quantity: 3,
         totalPrice: exports.products[0].price * 3
     },
     {
-        userId: "user2",
+        userId: "id_U02",
         productId: "prod1",
         quantity: 2,
         totalPrice: exports.products[0].price * 2
