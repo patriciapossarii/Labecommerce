@@ -25,7 +25,7 @@ export type TPurchase = {
     buyer: string,
     total_price: number,
     created_at: string,
-    paid: number,
+    paid: boolean,
 
 }
 

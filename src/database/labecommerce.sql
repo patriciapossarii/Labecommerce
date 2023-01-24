@@ -283,6 +283,20 @@ SELECT purchases_products.purchase_id AS purchaseId,
 FROM purchases_products
     LEFT JOIN products ON purchases_products.product_id = products.id
     LEFT JOIN purchases ON purchases_products.purchase_id = purchases.id;
-
-    DELETE FROM users
+DELETE FROM users
 WHERE id = "id_p06";
+SELECT purchases_products.purchase_id AS purchaseId,
+    purchases.total_price,
+    purchases.created_at,
+    purchases.paid,
+    purchases.buyer,
+      users.email,
+    users.name
+FROM purchases_products
+    LEFT JOIN products ON purchases_products.product_id = products.id
+    LEFT JOIN purchases ON purchases_products.purchase_id = purchases.id
+    LEFT JOIN users ON purchases_products.purchase_id = purchases.id;
+
+    SELECT purchases.id,purchases.total_price,purchases.created_at,purchases.paid,purchases.buyer,users.email,users.name FROM purchases
+    INNER JOIN users
+    ON purchases.buyer = users.id;
