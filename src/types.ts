@@ -9,7 +9,7 @@ export type TUser = {
     name: string,
     email: string,
     password: string,
-    created_at:string
+    created_at: string
 }
 
 export type TProduct = {
@@ -25,8 +25,28 @@ export type TPurchase = {
     buyer: string,
     total_price: number,
     created_at: string,
-    paid: number,
+    paid: boolean,
 
+}
+
+
+export type TPurchaseItem = {
+    id:string,
+    name:string
+    price:number,
+    description:string,
+    imageUrl:string,
+    quantity:number
+}
+export type TPurchaseDetail = {
+    purchaseId: string,
+    totalPrice: number,
+    createdAt: string,
+    isPaid: boolean,
+    buyerId:string,
+    email:string,
+    name:string,
+    productsList: TPurchaseItem[]
 }
 
 

@@ -1,4 +1,4 @@
-import { PRODUCT_CATEGORY, TProduct, TPurchase, TUser } from "./types"
+import { PRODUCT_CATEGORY, TProduct, TPurchase, TUser, TPurchaseDetail } from "./types"
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import { db } from "./database/knex"
@@ -17,10 +17,10 @@ app.get('/ping', (req: Request, res: Response) => {
 })
 
 //////////////////////////////////////////  USERS //////////////////////////////////////////
-//-->  GET  ALL USERS
+//  GET  ALL USERS
 app.get('/users', async (req: Request, res: Response) => {
     try {
-        const result = await db.raw(`SELECT * FROM users`)
+        const result = await db("users")
         res.status(200).send(result)
     } catch (error) {
         console.log(error)
@@ -37,7 +37,7 @@ app.get('/users', async (req: Request, res: Response) => {
     }
 })
 
-//-->  CREATE USER
+//  CREATE USER
 app.post('/users', async (req: Request, res: Response) => {
     try {
         const { id, name, email, password } = req.body as TUser
@@ -51,21 +51,15 @@ app.post('/users', async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'id' do usuário inválido. Deve iniciar com 'user'")
             }
-
             if (id.length < 5 || id.length > 8) {
                 res.status(400)
                 throw new Error("'id' do usuário inválido. Deve conter de 5 a 8 caracteres")
             }
-
-            const clientExists = await db.raw(`SELECT *
-            FROM users
-            WHERE id = "${id}";`)
-
+            const clientExists = await db("users").where({ id: id })
             if (clientExists.length >= 1) {
                 res.status(400)
                 throw new Error("'id' do usuário já existente.")
             }
-
         } else {
             res.status(400)
             throw new Error("'id' do usuário deve ser informado.")
@@ -76,17 +70,14 @@ app.post('/users', async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("name' do usuário deve ser string.")
             }
-
             if (name.length < 2) {
                 res.status(400)
                 throw new Error("'name' do usuário inválido. Deve conter no mínimo 2 caracteres")
             }
-
         } else {
             res.status(400)
             throw new Error("'name' do usuário deve ser informado.")
         }
-
 
         if (email !== undefined) {
             const expression: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
@@ -94,9 +85,7 @@ app.post('/users', async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'email'do usuário em formato inválido. Ex.: 'exemplo@exemplo.com'.")
             }
-            const emailExists = await db.raw(`SELECT *
-            FROM users
-            WHERE email = "${email}";`)
+            const emailExists = await db("users").where({ email: email })
             if (emailExists.length >= 1) {
                 res.status(400)
                 throw new Error("'email' do usuário já existente.")
@@ -116,10 +105,7 @@ app.post('/users', async (req: Request, res: Response) => {
             throw new Error("'password' do usuário deve ser informado.")
         }
 
-        await db.raw(`
-        INSERT INTO users (id, name, email, password)
-        VALUES("${id}", "${name}","${email}", "${password}")
-        `)
+        await db("users").insert({ id, name, email, password })
         res.status(201).send("Cadastro realizado com sucesso")
 
     } catch (error) {
@@ -138,12 +124,15 @@ app.post('/users', async (req: Request, res: Response) => {
 
 })
 
-//--> EDIT USER BY ID
+// EDIT USER BY ID
 app.put("/user/:id", async (req: Request, res: Response) => {
     try {
         const { id } = req.params
-
         const newId = req.body.id
+        const newName = req.body.name
+        const newEmail = req.body.email
+        const newPassword = req.body.password
+
         if (newId !== undefined) {
             if (typeof newId !== "string") {
                 res.status(400)
@@ -157,63 +146,43 @@ app.put("/user/:id", async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("`id`do usuário inválido. Deve conter de 5 a 8 caracteres")
             }
-
-            const [idOldExists] = await db.raw(`SELECT *
-            FROM users
-            WHERE id = "${newId}";`)
-            console.log(idOldExists)
+            const [idOldExists] = await db("users").where({ id: id })
             if (!idOldExists) {
                 res.status(404)
                 throw new Error("'id' do usuário não existe.")
             }
-
-
-            const [idOthersClienttExists] = await db.raw(`SELECT *
-           FROM users
-           WHERE id != "${newId}" 
-           AND id="${newId}";`)
-            console.log("2", idOthersClienttExists)
+            const [idOthersClienttExists] = await db("users").where("id", "!=", id).andWhere("id", "=", newId)
             if (idOthersClienttExists) {
                 res.status(404)
                 throw new Error("'id' do usuário já existente.")
             }
         }
 
-        const newName = req.body.name
         if (newName !== undefined) {
             if (typeof newName !== "string") {
                 res.status(400)
                 throw new Error("name' do usuário deve ser string.")
             }
-
             if (newName.length < 2) {
                 res.status(400)
                 throw new Error("'name' do usuário inválido. Deve conter no mínimo 2 caracteres")
             }
-
         }
 
-        const newEmail = req.body.email
         if (newEmail !== undefined) {
             const expression: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
             if (expression.test(newEmail) != true) {
                 res.status(400)
                 throw new Error("'email' do usuário no formato inválido. Ex.: 'exemplo@exemplo.com'.")
             }
+            const [mailOthersClienttExists] = await db("users").where("id", "!=", id).andWhere("email", "=", newEmail)
 
-
-            const [mailOthersClienttExists] = await db.raw(`SELECT *
-            FROM users
-            WHERE id != "${newId}" 
-            AND email = "${newEmail}";`)
             if (mailOthersClienttExists) {
                 res.status(400)
                 throw new Error("'email' de usuário já existe.")
             }
         }
 
-
-        const newPassword = req.body.password
         if (newPassword !== undefined) {
             if (typeof newPassword != "string") {
                 res.status(400)
@@ -228,26 +197,15 @@ app.put("/user/:id", async (req: Request, res: Response) => {
             throw new Error("'password' deve ser informado.")
         }
 
-        /*
-                const user = users.find((user) => {
-                    return user.id === id
-                })
-        */
-
-        const [user] = await db.raw(`SELECT *
-           FROM users
-           WHERE id = "${newId}";`)
+        const [user] = await db("users").where({ id: id })
         if (user) {
-            await db.raw(`
-            UPDATE users 
-            SET 
-            id = "${newId || user.id}",
-            name = "${newName || user.name}",
-            email = "${newEmail || user.email}",
-            password = "${newPassword || user.password}"
-            WHERE id = "${id}";
-            `)
-
+            const updateUser = {
+                id: newId || user.id,
+                name: newName || user.name,
+                email: newEmail || user.email,
+                password: newPassword || user.password
+            }
+            await db("users").update(updateUser).where({ id: id })
             res.status(200).send("Cadastro atualizado com sucesso")
         } else {
             res.status(404).send("Usuário não encontrado")
@@ -511,7 +469,7 @@ app.get("/products/:id", async (req: Request, res: Response) => {
         const result = await db.raw(`SELECT *
         FROM products
         WHERE id = "${id}";`)
-        console.log(result)
+
         if (result.length === 0) {
             res.status(404)
             throw new Error("'id'do produto não encontrado.")
@@ -663,7 +621,7 @@ app.put("/product/:id", async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'image_url' do produto não pode ser vazio.")
             }
-        } 
+        }
 
         /*
                 const product = products.find((product) => {
@@ -815,7 +773,7 @@ app.post('/purchases', async (req: Request, res: Response) => {
             if (id[0] != "p" || id[1] != "u" || id[2] != "r" || id[3] != "c") {
                 res.status(400)
                 throw new Error("'id' da compra inválido. Deve iniciar com 'purc'")
-            } 8
+            }
             if (id.length < 5 || id.length > 8) {
                 res.status(400)
                 throw new Error("'id' da compra inválido. Deve conter de 5 a 8 caracteres")
@@ -912,6 +870,7 @@ app.get("/users/:id/purchases", async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'id' do usuário inválido. Deve iniciar com 'user'")
             }
+            
             if (id.length < 5 || id.length > 8) {
                 res.status(400)
                 throw new Error("'id' do usuário inválido. Deve conter de 5 a 8 caracteres")
@@ -936,6 +895,104 @@ app.get("/users/:id/purchases", async (req: Request, res: Response) => {
         WHERE buyer = "${id}";`)
 
         res.status(200).send(result)
+    } catch (error) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
+            res.status(500)
+        }
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
+    }
+})
+
+// --> GET PURCHASES BY ID
+app.get("/purchases/:id", async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+
+        if (id !== undefined) {
+            if (id === ":id") {
+                res.status(400)
+                throw new Error("'id' da compra não pode ser vazio.")
+            }
+            if (typeof id !== "string") {
+                res.status(400)
+                throw new Error("'id' da compra deve ser string.")
+            }
+           /* if (id[0] != "p" || id[1] != "u" || id[2] != "r" || id[3] != "c") {
+                res.status(400)
+                throw new Error("'id' da compra inválido. Deve iniciar com 'purc'")
+            }
+            */
+            if (id.length < 5 || id.length > 8) {
+                res.status(400)
+                throw new Error("'id' da comprae inválido. Deve conter de 5 a 8 caracteres")
+            }
+
+
+            const idPurchasetExists = await db.raw(`SELECT *
+            FROM purchases
+            WHERE id = "${id}";`)
+
+            if (idPurchasetExists.length === 0) {
+                res.status(404)
+                throw new Error("'id' da compra não encontrado.")
+            }
+        } else {
+            res.status(400)
+            throw new Error(" `id` da compra deve ser informado.")
+        }
+
+        const result1 = await db("purchases as p")
+            .innerJoin(
+                "users as u",
+                "p.buyer",
+                "=",
+                "u.id"
+            )
+            .select("p.id as purchaseId",
+                "p.total_price as totalPrice",
+                "p.created_at as createdAt",
+                "p.paid as isPaid",
+                "p.buyer as buyerId",
+                "u.email as email",
+                "u.name as name")
+            .where("p.id", "=", id)
+        result1[0].isPaid === 0 ? result1[0].isPaid = false : result1[0].isPaid = true
+
+        const result2 = await db("purchases_products as pp")
+        .innerJoin(
+            "products as prod",
+            "pp.product_id",
+            "=",
+            "prod.id"
+        )
+        .select("prod.id as id",
+        "prod.name as name",
+        "prod.price as price",
+        "prod.description as description",
+        "prod.image_url as image_url",
+        "pp.quantity as quantity"
+        ).where("pp.purchase_id", "=", id)
+       
+
+        let result3 = {
+            purchaseId: result1[0].purchaseId,
+            totalPrice: result1[0].totalPrice,
+            createdAt: result1[0].createdAt,
+            isPaid: result1[0].isPaid,
+            buyerId: result1[0].buyerId,
+            email: result1[0].email,
+            name: result1[0].name,
+            productsList:result2
+        }
+        
+        res.status(200).send(result3)
     } catch (error) {
         console.log(error)
 
