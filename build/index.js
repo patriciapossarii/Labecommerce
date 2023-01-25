@@ -801,6 +801,10 @@ app.get("/purchases/:id", (req, res) => __awaiter(void 0, void 0, void 0, functi
                 res.status(400);
                 throw new Error("'id' da compra deve ser string.");
             }
+            if (id[0] != "p" || id[1] != "u" || id[2] != "r" || id[3] != "c") {
+                res.status(400);
+                throw new Error("'id' da compra inválido. Deve iniciar com 'purc'");
+            }
             if (id.length < 5 || id.length > 8) {
                 res.status(400);
                 throw new Error("'id' da comprae inválido. Deve conter de 5 a 8 caracteres");
@@ -817,25 +821,25 @@ app.get("/purchases/:id", (req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(400);
             throw new Error(" `id` da compra deve ser informado.");
         }
-        const result = yield (0, knex_1.db)("purchases as p")
+        const result1 = yield (0, knex_1.db)("purchases as p")
             .innerJoin("users as u", "p.buyer", "=", "u.id")
             .select("p.id as purchaseId", "p.total_price as totalPrice", "p.created_at as createdAt", "p.paid as isPaid", "p.buyer as buyerId", "u.email as email", "u.name as name")
             .where("p.id", "=", id);
-        result[0].isPaid === 0 ? result[0].isPaid = false : result[0].isPaid = true;
+        result1[0].isPaid === 0 ? result1[0].isPaid = false : result1[0].isPaid = true;
         const result2 = yield (0, knex_1.db)("purchases_products as pp")
             .innerJoin("products as prod", "pp.product_id", "=", "prod.id")
             .select("prod.id as id", "prod.name as name", "prod.price as price", "prod.description as description", "prod.image_url as image_url", "pp.quantity as quantity").where("pp.purchase_id", "=", id);
-        let teste = {
-            purchaseId: result[0].purchaseId,
-            totalPrice: result[0].totalPrice,
-            createdAt: result[0].createdAt,
-            isPaid: result[0].isPaid,
-            buyerId: result[0].buyerId,
-            email: result[0].email,
-            name: result[0].name,
+        let result3 = {
+            purchaseId: result1[0].purchaseId,
+            totalPrice: result1[0].totalPrice,
+            createdAt: result1[0].createdAt,
+            isPaid: result1[0].isPaid,
+            buyerId: result1[0].buyerId,
+            email: result1[0].email,
+            name: result1[0].name,
             productsList: result2
         };
-        res.status(200).send(teste);
+        res.status(200).send(result3);
     }
     catch (error) {
         console.log(error);
