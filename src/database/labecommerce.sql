@@ -25,11 +25,11 @@ PRAGMA table_info('users');
 PRAGMA table_info('products');
 PRAGMA table_info('purchases');
 INSERT INTO users (id, name, email, password)
-VALUES ("id_U01", "user01", "user01@email.com", "S3nha1"),
-    ("id_U02", "user02", "user02@email.com", "S3nha2"),
-    ("id_U03", "user03", "user03@email.com", "S3nha3"),
-    ("id_U04", "user04", "user04@email.com", "S3nha4"),
-    ("id_U05", "user05", "user05@email.com", "S3nha5");
+VALUES ("user01", "albert einstein", "a-e@email.com", "S3nha1"),
+    ("user02", "isaac newton", "i-n@email.com", "S3nha2"),
+    ("user03", "marie curie", "m-c3@email.com", "S3nha3"),
+    ("user04", "hipatia", "h@email.com", "S3nha4"),
+    ("user05", "nikola tesla", "n-t@email.com", "S3nha5");
 INSERT INTO products(id, name, price, description, image_url)
 VALUES(
         "prod01",
@@ -193,11 +193,11 @@ VALUES(
         "https://img.kalunga.com.br/fotosdeprodutos/144755d.jpg"
     );
 INSERT INTO purchases(id, buyer, total_price)
-values("pur01", "id_U01", 346),
-    ("pur02", "id_U02", 34),
-    ("pur03", "id_U03", 179),
-    ("pur04", "id_U04", 70),
-    ("pur05", "id_U05", 40);
+values("pur01", "user01", 346),
+    ("pur02", "user02", 34),
+    ("pur03", "user03", 179),
+    ("pur04", "user04", 70),
+    ("pur05", "user05", 40);
 SELECT *
 FROM purchases;
 -- Get All Users
@@ -221,7 +221,7 @@ ORDER BY price ASC;
 -- Search Product by name
 SELECT *
 FROM products
-WHERE name LIKE "%Cabo%";
+WHERE name LIKE "%pad%";
 --Create User
 --Create Product
 --Get Products by id
@@ -262,13 +262,13 @@ CREATE TABLE purchases_products(
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 INSERT INTO purchases_products(purchase_id, product_id, quantity)
-VALUES ("pur01", "prod06", 1),
-    ("pur01", "prod07", 1),
-    ("pur02", "prod01", 1),
-    ("pur03", "prod08", 1),
-    ("pur03", "prod10", 1),
-    ("pur04", "prod20", 3),
-    ("pur06", "prod21", 1);
+VALUES ("purc01", "prod06", 1),
+    ("purc01", "prod07", 1),
+    ("purc02", "prod01", 1),
+    ("purc03", "prod08", 1),
+    ("purc03", "prod10", 1),
+    ("purc04", "prod20", 3),
+    ("purc06", "prod21", 1);
 SELECT *
 FROM purchases_products;
 --SELECT * FROM purchases_products pp

@@ -924,11 +924,11 @@ app.get("/purchases/:id", async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'id' da compra deve ser string.")
             }
-           /* if (id[0] != "p" || id[1] != "u" || id[2] != "r" || id[3] != "c") {
+            if (id[0] != "p" || id[1] != "u" || id[2] != "r" || id[3] != "c") {
                 res.status(400)
                 throw new Error("'id' da compra inválido. Deve iniciar com 'purc'")
             }
-            */
+            
             if (id.length < 5 || id.length > 8) {
                 res.status(400)
                 throw new Error("'id' da comprae inválido. Deve conter de 5 a 8 caracteres")
