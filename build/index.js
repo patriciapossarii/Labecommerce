@@ -172,7 +172,6 @@ app.put("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 throw new Error("'email' do usuário no formato inválido. Ex.: 'exemplo@exemplo.com'.");
             }
             const [mailOthersClienttExists] = yield (0, knex_1.db)("users").where("id", "!=", id).andWhere("email", "=", newEmail);
-            console.log(mailOthersClienttExists);
             if (mailOthersClienttExists) {
                 res.status(400);
                 throw new Error("'email' de usuário já existe.");
@@ -425,7 +424,6 @@ app.get("/products/:id", (req, res) => __awaiter(void 0, void 0, void 0, functio
         const result = yield knex_1.db.raw(`SELECT *
         FROM products
         WHERE id = "${id}";`);
-        console.log(result);
         if (result.length === 0) {
             res.status(404);
             throw new Error("'id'do produto não encontrado.");
@@ -666,7 +664,6 @@ app.post('/purchases', (req, res) => __awaiter(void 0, void 0, void 0, function*
                 res.status(400);
                 throw new Error("'id' da compra inválido. Deve iniciar com 'purc'");
             }
-            8;
             if (id.length < 5 || id.length > 8) {
                 res.status(400);
                 throw new Error("'id' da compra inválido. Deve conter de 5 a 8 caracteres");
@@ -778,6 +775,67 @@ app.get("/users/:id/purchases", (req, res) => __awaiter(void 0, void 0, void 0, 
         FROM purchases
         WHERE buyer = "${id}";`);
         res.status(200).send(result);
+    }
+    catch (error) {
+        console.log(error);
+        if (req.statusCode === 200) {
+            res.status(500);
+        }
+        if (error instanceof Error) {
+            res.send(error.message);
+        }
+        else {
+            res.send("Erro inesperado");
+        }
+    }
+}));
+app.get("/purchases/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        if (id !== undefined) {
+            if (id === ":id") {
+                res.status(400);
+                throw new Error("'id' da compra não pode ser vazio.");
+            }
+            if (typeof id !== "string") {
+                res.status(400);
+                throw new Error("'id' da compra deve ser string.");
+            }
+            if (id.length < 5 || id.length > 8) {
+                res.status(400);
+                throw new Error("'id' da comprae inválido. Deve conter de 5 a 8 caracteres");
+            }
+            const idPurchasetExists = yield knex_1.db.raw(`SELECT *
+            FROM purchases
+            WHERE id = "${id}";`);
+            if (idPurchasetExists.length === 0) {
+                res.status(404);
+                throw new Error("'id' da compra não encontrado.");
+            }
+        }
+        else {
+            res.status(400);
+            throw new Error(" `id` da compra deve ser informado.");
+        }
+        const result = yield (0, knex_1.db)("purchases as p")
+            .innerJoin("users as u", "p.buyer", "=", "u.id")
+            .select("p.id as purchaseId", "p.total_price as totalPrice", "p.created_at as createdAt", "p.paid as isPaid", "p.buyer as buyerId", "u.email as email", "u.name as name")
+            .where("p.id", "=", id);
+        result[0].isPaid === 0 ? result[0].isPaid = false : result[0].isPaid = true;
+        const result2 = yield (0, knex_1.db)("purchases_products as pp")
+            .innerJoin("products as prod", "pp.product_id", "=", "prod.id")
+            .select("prod.id as id", "prod.name as name", "prod.price as price", "prod.description as description", "prod.image_url as image_url", "pp.quantity as quantity").where("pp.purchase_id", "=", id);
+        let teste = {
+            purchaseId: result[0].purchaseId,
+            totalPrice: result[0].totalPrice,
+            createdAt: result[0].createdAt,
+            isPaid: result[0].isPaid,
+            buyerId: result[0].buyerId,
+            email: result[0].email,
+            name: result[0].name,
+            productsList: result2
+        };
+        res.status(200).send(teste);
     }
     catch (error) {
         console.log(error);

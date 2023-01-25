@@ -1,4 +1,4 @@
-import { PRODUCT_CATEGORY, TProduct, TPurchase, TUser } from "./types"
+import { PRODUCT_CATEGORY, TProduct, TPurchase, TUser, TPurchaseDetail } from "./types"
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import { db } from "./database/knex"
@@ -176,7 +176,7 @@ app.put("/user/:id", async (req: Request, res: Response) => {
                 throw new Error("'email' do usuário no formato inválido. Ex.: 'exemplo@exemplo.com'.")
             }
             const [mailOthersClienttExists] = await db("users").where("id", "!=", id).andWhere("email", "=", newEmail)
-           
+
             if (mailOthersClienttExists) {
                 res.status(400)
                 throw new Error("'email' de usuário já existe.")
@@ -469,7 +469,7 @@ app.get("/products/:id", async (req: Request, res: Response) => {
         const result = await db.raw(`SELECT *
         FROM products
         WHERE id = "${id}";`)
-       
+
         if (result.length === 0) {
             res.status(404)
             throw new Error("'id'do produto não encontrado.")
@@ -773,7 +773,7 @@ app.post('/purchases', async (req: Request, res: Response) => {
             if (id[0] != "p" || id[1] != "u" || id[2] != "r" || id[3] != "c") {
                 res.status(400)
                 throw new Error("'id' da compra inválido. Deve iniciar com 'purc'")
-            } 
+            }
             if (id.length < 5 || id.length > 8) {
                 res.status(400)
                 throw new Error("'id' da compra inválido. Deve conter de 5 a 8 caracteres")
@@ -870,6 +870,7 @@ app.get("/users/:id/purchases", async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'id' do usuário inválido. Deve iniciar com 'user'")
             }
+            
             if (id.length < 5 || id.length > 8) {
                 res.status(400)
                 throw new Error("'id' do usuário inválido. Deve conter de 5 a 8 caracteres")
@@ -923,10 +924,11 @@ app.get("/purchases/:id", async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'id' da compra deve ser string.")
             }
-            if (id[0] != "p" || id[1] != "u" || id[2] != "r" || id[3] != "c") {
+           /* if (id[0] != "p" || id[1] != "u" || id[2] != "r" || id[3] != "c") {
                 res.status(400)
                 throw new Error("'id' da compra inválido. Deve iniciar com 'purc'")
-            } 
+            }
+            */
             if (id.length < 5 || id.length > 8) {
                 res.status(400)
                 throw new Error("'id' da comprae inválido. Deve conter de 5 a 8 caracteres")
@@ -946,24 +948,51 @@ app.get("/purchases/:id", async (req: Request, res: Response) => {
             throw new Error(" `id` da compra deve ser informado.")
         }
 
-const result = await db("purchases as p")
-        .innerJoin(
-            "users as u",
-            "p.buyer", 
-            "=",
-            "u.id"
-        )
-        .select("p.id as purchaseId",
-        "p.total_price as totalPrice",
-        "p.created_at as createdAt",
-        "p.paid as isPaid",
-        "p.buyer as buyerId",
-        "u.email",
-        "u.name" )
-        .where("p.id","=",id)
-       result[0].isPaid===0?result[0].isPaid=false:result[0].isPaid=true
+        const result1 = await db("purchases as p")
+            .innerJoin(
+                "users as u",
+                "p.buyer",
+                "=",
+                "u.id"
+            )
+            .select("p.id as purchaseId",
+                "p.total_price as totalPrice",
+                "p.created_at as createdAt",
+                "p.paid as isPaid",
+                "p.buyer as buyerId",
+                "u.email as email",
+                "u.name as name")
+            .where("p.id", "=", id)
+        result1[0].isPaid === 0 ? result1[0].isPaid = false : result1[0].isPaid = true
 
-        res.status(200).send(result)
+        const result2 = await db("purchases_products as pp")
+        .innerJoin(
+            "products as prod",
+            "pp.product_id",
+            "=",
+            "prod.id"
+        )
+        .select("prod.id as id",
+        "prod.name as name",
+        "prod.price as price",
+        "prod.description as description",
+        "prod.image_url as image_url",
+        "pp.quantity as quantity"
+        ).where("pp.purchase_id", "=", id)
+       
+
+        let result3 = {
+            purchaseId: result1[0].purchaseId,
+            totalPrice: result1[0].totalPrice,
+            createdAt: result1[0].createdAt,
+            isPaid: result1[0].isPaid,
+            buyerId: result1[0].buyerId,
+            email: result1[0].email,
+            name: result1[0].name,
+            productsList:result2
+        }
+        
+        res.status(200).send(result3)
     } catch (error) {
         console.log(error)
 

@@ -268,7 +268,7 @@ VALUES ("pur01", "prod06", 1),
     ("pur03", "prod08", 1),
     ("pur03", "prod10", 1),
     ("pur04", "prod20", 3),
-    ("pur05", "prod21", 1);
+    ("pur06", "prod21", 1);
 SELECT *
 FROM purchases_products;
 --SELECT * FROM purchases_products pp
@@ -300,3 +300,8 @@ FROM purchases_products
     SELECT purchases.id,purchases.total_price,purchases.created_at,purchases.paid,purchases.buyer,users.email,users.name FROM purchases
     INNER JOIN users
     ON purchases.buyer = users.id;
+    SELECT *  FROM purchases_products
+    INNER JOIN products
+    on purchases_products.product_id = products.id
+    WHERE purchases_products.purchase_id = "pur06";
+     SELECT *  FROM purchases_products;
