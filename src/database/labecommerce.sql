@@ -193,11 +193,11 @@ VALUES(
         "https://img.kalunga.com.br/fotosdeprodutos/144755d.jpg"
     );
 INSERT INTO purchases(id, buyer, total_price)
-values("pur01", "user01", 346),
-    ("pur02", "user02", 34),
-    ("pur03", "user03", 179),
-    ("pur04", "user04", 70),
-    ("pur05", "user05", 40);
+values("purc01", "user01", 346),
+    ("purc02", "user02", 34),
+    ("purc03", "user03", 179),
+    ("purc04", "user04", 70),
+    ("purc05", "user05", 40);
 SELECT *
 FROM purchases;
 -- Get All Users
@@ -305,3 +305,4 @@ FROM purchases_products
     on purchases_products.product_id = products.id
     WHERE purchases_products.purchase_id = "pur06";
      SELECT *  FROM purchases_products;
+DROP Table purchases_products;
