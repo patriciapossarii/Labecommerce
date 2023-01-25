@@ -70,10 +70,12 @@ const getPurchaseById = async (req: Request, res: Response) => {
         "pp.quantity as quantity"
         ).where("pp.purchase_id", "=", id)
        
+let sum = 0
+result2.forEach(value =>{sum +=value.price * value.quantity})
 
         let result3 = {
             purchaseId: result1[0].purchaseId,
-            totalPrice: result1[0].totalPrice,
+            totalPrice: sum,
             createdAt: result1[0].createdAt,
             isPaid: result1[0].isPaid,
             buyerId: result1[0].buyerId,

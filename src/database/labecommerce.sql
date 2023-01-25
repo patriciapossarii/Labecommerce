@@ -25,11 +25,31 @@ PRAGMA table_info('users');
 PRAGMA table_info('products');
 PRAGMA table_info('purchases');
 INSERT INTO users (id, name, email, password)
-VALUES ("user01", "albert einstein", "a-e@email.com", "S3nha1"),
-    ("user02", "isaac newton", "i-n@email.com", "S3nha2"),
-    ("user03", "marie curie", "m-c3@email.com", "S3nha3"),
+VALUES (
+        "user01",
+        "albert einstein",
+        "a-e@email.com",
+        "S3nha1"
+    ),
+    (
+        "user02",
+        "isaac newton",
+        "i-n@email.com",
+        "S3nha2"
+    ),
+    (
+        "user03",
+        "marie curie",
+        "m-c3@email.com",
+        "S3nha3"
+    ),
     ("user04", "hipatia", "h@email.com", "S3nha4"),
-    ("user05", "nikola tesla", "n-t@email.com", "S3nha5");
+    (
+        "user05",
+        "nikola tesla",
+        "n-t@email.com",
+        "S3nha5"
+    );
 INSERT INTO products(id, name, price, description, image_url)
 VALUES(
         "prod01",
@@ -269,6 +289,8 @@ VALUES ("purc01", "prod06", 1),
     ("purc03", "prod10", 1),
     ("purc04", "prod20", 3),
     ("purc06", "prod21", 1);
+INSERT INTO purchases_products(purchase_id, product_id, quantity)
+VALUES ("purc06", "prod21", 2), ("purc06", "prod21", 1), ("purc06", "prod20", 3);
 SELECT *
 FROM purchases_products;
 --SELECT * FROM purchases_products pp
@@ -290,19 +312,25 @@ SELECT purchases_products.purchase_id AS purchaseId,
     purchases.created_at,
     purchases.paid,
     purchases.buyer,
-      users.email,
+    users.email,
     users.name
 FROM purchases_products
     LEFT JOIN products ON purchases_products.product_id = products.id
     LEFT JOIN purchases ON purchases_products.purchase_id = purchases.id
     LEFT JOIN users ON purchases_products.purchase_id = purchases.id;
-
-    SELECT purchases.id,purchases.total_price,purchases.created_at,purchases.paid,purchases.buyer,users.email,users.name FROM purchases
-    INNER JOIN users
-    ON purchases.buyer = users.id;
-    SELECT *  FROM purchases_products
-    INNER JOIN products
-    on purchases_products.product_id = products.id
-    WHERE purchases_products.purchase_id = "pur06";
-     SELECT *  FROM purchases_products;
+SELECT purchases.id,
+    purchases.total_price,
+    purchases.created_at,
+    purchases.paid,
+    purchases.buyer,
+    users.email,
+    users.name
+FROM purchases
+    INNER JOIN users ON purchases.buyer = users.id;
+SELECT *
+FROM purchases_products
+    INNER JOIN products on purchases_products.product_id = products.id
+WHERE purchases_products.purchase_id = "pur06";
+SELECT *
+FROM purchases_products;
 DROP Table purchases_products;
