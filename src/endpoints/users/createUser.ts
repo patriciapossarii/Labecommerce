@@ -1,10 +1,11 @@
 import { Response, Request } from "express";
 import { db } from "../../database/knex";
 import { TUser } from "../../types";
+import moment, { Moment } from 'moment'
 
 const createUser = async (req: Request, res: Response) => {
     try {
-        const { id, name, email, password } = req.body as TUser
+        const { id, name, email, password } = req.body 
 
         if (id !== undefined) {
             if (typeof id !== "string") {
@@ -71,8 +72,17 @@ const createUser = async (req: Request, res: Response) => {
             res.status(400)
             throw new Error("'password' do usuário deve ser informado.")
         }
+        var date = Date.now()
+        let formattedDate = (moment(date)).format('YYYY-MM-DD HH:mm:ss')
+        const addUser:TUser = {
+            id,
+            name,
+            email,
+            password,
+            created_at:formattedDate
+        }
 
-        await db("users").insert({ id, name, email, password })
+        await db("users").insert(addUser)
         res.status(201).send("Cadastro realizado com sucesso")
 
     } catch (error) {
