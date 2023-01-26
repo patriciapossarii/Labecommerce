@@ -14,6 +14,7 @@ import getAllPurchases from "./endpoints/purchases/getAllPurchases"
 import createPurchase from "./endpoints/purchases/createPurchase"
 import getPurchasesByUserId from "./endpoints/purchases/getPurchasesByUserId"
 import getPurchaseById from "./endpoints/purchases/getPurchaseById"
+import deletePurchaseById from './endpoints/purchases/deletePurchaseById'
 
 
 const app = express()
@@ -45,6 +46,7 @@ app.get('/purchases', getAllPurchases)
 app.post('/purchases', createPurchase)
 app.get("/users/:id/purchases", getPurchasesByUserId)
 app.get("/purchases/:id", getPurchaseById)
+app.delete("/purchase/:id", deletePurchaseById)
 
 
 
