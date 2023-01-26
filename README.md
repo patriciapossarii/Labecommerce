@@ -25,6 +25,7 @@
  - SQL e SQLite
  - Knex
  - Postman
+ - Moment
 
 
 <h2 id="funcionalidades"> Funcionalidades do projeto</h2>
