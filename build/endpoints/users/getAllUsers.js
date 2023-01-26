@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = require("../../database/knex");
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield (0, knex_1.db)("users");
+        const result = yield (0, knex_1.db)("users").select("id", "name", "email", "password", "created_at as createdAt");
         res.status(200).send(result);
     }
     catch (error) {

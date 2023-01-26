@@ -35,22 +35,17 @@ const deleteProductById = (req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(400);
             throw new Error(" 'id' deve ser informada.");
         }
-        const productIndex = yield knex_1.db.raw(`SELECT *
-        FROM products
-        WHERE id = "${id}";`);
+        const productIndex = yield (0, knex_1.db)("products").where({ id: id });
         if (productIndex.length === 0) {
             res.status(404);
             throw new Error("Produto não encontrado");
         }
-        const productInPurchase = yield knex_1.db.raw(`SELECT *
-        FROM purchases_products
-        WHERE product_id = "${id}";`);
+        const productInPurchase = yield (0, knex_1.db)("purchases_products").where({ product_id: id });
         if (productInPurchase.length > 0) {
             res.status(422);
             throw new Error(" 'id' cadastrado em uma 'purchases'");
         }
-        yield knex_1.db.raw(`DELETE FROM products
-      WHERE id = "${id}";`);
+        yield (0, knex_1.db)("products").del().where({ id: id });
         res.status(200).send("Produto apagado com sucesso");
     }
     catch (error) {

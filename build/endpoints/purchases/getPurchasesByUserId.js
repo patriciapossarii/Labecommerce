@@ -30,11 +30,8 @@ const getPurchasesByUserId = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 res.status(400);
                 throw new Error("'id' do usuário inválido. Deve conter de 5 a 8 caracteres");
             }
-            const idUsertExists = yield knex_1.db.raw(`SELECT *
-            FROM users
-            WHERE id = "${id}";`);
-            console.log(idUsertExists);
-            if (idUsertExists.length === 0) {
+            const idUsertExists = yield (0, knex_1.db)("users").where({ id: id });
+            if (idUsertExists.length == 0) {
                 res.status(404);
                 throw new Error("'id' do usuário não encontrado.");
             }
@@ -43,9 +40,7 @@ const getPurchasesByUserId = (req, res) => __awaiter(void 0, void 0, void 0, fun
             res.status(400);
             throw new Error(" `id` do usuário deve ser informado.");
         }
-        const result = yield knex_1.db.raw(`SELECT *
-        FROM purchases
-        WHERE buyer = "${id}";`);
+        const result = yield (0, knex_1.db)("purchases").where({ buyer: id });
         res.status(200).send(result);
     }
     catch (error) {

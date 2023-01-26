@@ -4,7 +4,7 @@ import { db } from "../../database/knex";
 
 const getAllProducts = async (req: Request, res: Response) => {
     try {
-          const result = await db("products")
+          const result = await db("products").select("id","name","price","description","image_url as imageUrl")
         res.status(200).send(result)
     } catch (error) {
         console.log(error)

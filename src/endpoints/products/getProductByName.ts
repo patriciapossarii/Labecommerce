@@ -16,7 +16,7 @@ const getProductByName = async (req: Request, res: Response) => {
             }
         }
 
-      const result = await db("products").where("name","LIKE",`%${q}%`)
+      const result = await db("products").where("name","LIKE",`%${q}%`).select("id","name","price","description","image_url as imageUrl")
         res.status(200).send(result)
 
     } catch (error) {

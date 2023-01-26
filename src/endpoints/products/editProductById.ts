@@ -9,7 +9,7 @@ const editProductById = async (req: Request, res: Response) => {
         const newName = req.body.name as string
         const newPrice = req.body.price as number
         const newDescription = req.body.description as string
-        const newImage_url = req.body.image_url as string
+        const newImageUrl = req.body.imageUrl as string
 
         if (newId !== undefined) {
             if (typeof newId !== "string") {
@@ -31,7 +31,7 @@ const editProductById = async (req: Request, res: Response) => {
                 throw new Error("'id' do produto não existe.")
             }
 
-            const idOthersProductstExists = await db("products").where("id", "!=", id).andWhere("id", "=", newId)
+            const [idOthersProductstExists] = await db("products").where("id", "!=", id).andWhere("id", "=", newId)
 
             if (idOthersProductstExists) {
                 res.status(404)
@@ -76,12 +76,12 @@ const editProductById = async (req: Request, res: Response) => {
         }
 
 
-        if (newImage_url !== undefined) {
-            if (typeof newImage_url !== "string") {
+        if (newImageUrl !== undefined) {
+            if (typeof newImageUrl !== "string") {
                 res.status(400)
                 throw new Error("'image_url' do produto deve ser string.")
             }
-            if (newImage_url.length < 1) {
+            if (newImageUrl.length < 1) {
                 res.status(400)
                 throw new Error("'image_url' do produto não pode ser vazio.")
             }
@@ -94,7 +94,7 @@ const editProductById = async (req: Request, res: Response) => {
                 name: newName || product.name,
                 price: isNaN(newPrice) ? product.price : newPrice,
                 description: newDescription || product.description,
-                image_url: newImage_url || product.image_url
+                image_url: newImageUrl || product.image_url
             }
             await db("products").update(updateProduct).where({ id: id })
             res.status(200).send("Produto atualizado com sucesso")

@@ -4,7 +4,7 @@ import { TProduct } from "../../types";
 
 const createProduct = async (req: Request, res: Response) => {
     try {
-        const { id, name, price, description, image_url } = req.body
+        const { id, name, price, description, imageUrl } = req.body
 
 
         if (id !== undefined) {
@@ -80,18 +80,18 @@ const createProduct = async (req: Request, res: Response) => {
         }
 
 
-        if (image_url !== undefined) {
-            if (typeof image_url !== "string") {
+        if (imageUrl !== undefined) {
+            if (typeof imageUrl !== "string") {
                 res.status(400)
-                throw new Error("'image_url' do produto deve ser string.")
+                throw new Error("'imageUrl' do produto deve ser string.")
             }
-            if (image_url.length < 1) {
+            if (imageUrl.length < 1) {
                 res.status(400)
-                throw new Error("'image_url' do produto não pode ser vazio.")
+                throw new Error("'imageUrl' do produto não pode ser vazio.")
             }
         } else {
             res.status(400)
-            throw new Error("'image_url' do produto deve ser informado.")
+            throw new Error("'imageUrl' do produto deve ser informado.")
         }
 
         const addProduct: TProduct = {
@@ -99,7 +99,7 @@ const createProduct = async (req: Request, res: Response) => {
             name,
             price,
             description,
-            image_url
+            image_url:imageUrl
         }
 
         await db("products").insert(addProduct)

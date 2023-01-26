@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = require("../../database/knex");
+const moment_1 = __importDefault(require("moment"));
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id, name, email, password } = req.body;
@@ -76,7 +80,16 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             res.status(400);
             throw new Error("'password' do usuário deve ser informado.");
         }
-        yield (0, knex_1.db)("users").insert({ id, name, email, password });
+        var date = Date.now();
+        let dateNow = ((0, moment_1.default)(date)).format('YYYY-MM-DD HH:mm:ss');
+        const addUser = {
+            id,
+            name,
+            email,
+            password,
+            created_at: dateNow
+        };
+        yield (0, knex_1.db)("users").insert(addUser);
         res.status(201).send("Cadastro realizado com sucesso");
     }
     catch (error) {

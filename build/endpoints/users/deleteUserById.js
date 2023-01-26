@@ -35,19 +35,14 @@ const deleteUserById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             res.status(400);
             throw new Error("'id' do usuário deve ser informado.");
         }
-        const [userInPurchase] = yield knex_1.db.raw(`SELECT *
-        FROM purchases
-        WHERE buyer = "${id}";`);
+        const [userInPurchase] = yield (0, knex_1.db)("purchases").where({ buyer: id });
         if (userInPurchase) {
             res.status(422);
             throw new Error(" 'id' do usuário cadastrado em uma 'purchases'");
         }
-        const [userIndex] = yield knex_1.db.raw(`SELECT *
-        FROM users
-        WHERE id = "${id}";`);
+        const [userIndex] = yield (0, knex_1.db)("users").where({ id: id });
         if (userIndex) {
-            yield knex_1.db.raw(`DELETE FROM users 
-        WHERE id = "${id}";`);
+            yield (0, knex_1.db)("users").del().where({ id: id });
             res.status(200).send("Usuário apagado com sucesso");
         }
         else {

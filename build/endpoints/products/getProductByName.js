@@ -23,9 +23,7 @@ const getProductByName = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 throw new Error("A busca de produto deve possuir pelo menos um caractere");
             }
         }
-        const result = yield knex_1.db.raw(`SELECT *
-       FROM products
-       WHERE name LIKE "%${q}%";`);
+        const result = yield (0, knex_1.db)("products").where("name", "LIKE", `%${q}%`).select("id", "name", "price", "description", "image_url as imageUrl");
         res.status(200).send(result);
     }
     catch (error) {

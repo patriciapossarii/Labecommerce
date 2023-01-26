@@ -35,7 +35,7 @@ app.delete("/user/:id", deleteUserById_1.default);
 app.get('/products', getAllProducts_1.default);
 app.post('/products', createProduct_1.default);
 app.get("/products/:id", getProductById_1.default);
-app.get('/product/search', getProductByName_1.default);
+app.get('/products/search', getProductByName_1.default);
 app.put("/product/:id", editProductById_1.default);
 app.delete("/product/:id", deleteProductById_1.default);
 app.get('/purchases', getAllPurchases_1.default);

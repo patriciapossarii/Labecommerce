@@ -83,7 +83,8 @@ const editUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 id: newId || user.id,
                 name: newName || user.name,
                 email: newEmail || user.email,
-                password: newPassword || user.password
+                password: newPassword || user.password,
+                created_at: user.created_at
             };
             yield (0, knex_1.db)("users").update(updateUser).where({ id: id });
             res.status(200).send("Cadastro atualizado com sucesso");

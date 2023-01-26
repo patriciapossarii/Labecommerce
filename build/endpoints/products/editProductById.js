@@ -31,17 +31,12 @@ const editProductById = (req, res) => __awaiter(void 0, void 0, void 0, function
                 res.status(400);
                 throw new Error("`id`do produto inválido. Deve conter de 5 a 8 caracteres");
             }
-            const idOldExists = yield knex_1.db.raw(`SELECT *
-           FROM products
-           WHERE id = "${id}";`);
+            const idOldExists = yield (0, knex_1.db)("products").where({ id: id });
             if (!idOldExists) {
                 res.status(404);
                 throw new Error("'id' do produto não existe.");
             }
-            const idOthersProductstExists = yield knex_1.db.raw(`SELECT *
-            FROM products
-            WHERE id != "${id}" 
-            AND id = "${newId}";`);
+            const idOthersProductstExists = yield (0, knex_1.db)("products").where("id", "!=", id).andWhere("id", "=", newId);
             if (idOthersProductstExists) {
                 res.status(404);
                 throw new Error("'id' do produto já existente.");
@@ -87,20 +82,16 @@ const editProductById = (req, res) => __awaiter(void 0, void 0, void 0, function
                 throw new Error("'image_url' do produto não pode ser vazio.");
             }
         }
-        const [product] = yield knex_1.db.raw(`SELECT *
-        FROM products 
-        WHERE id = "${id}";`);
+        const [product] = yield (0, knex_1.db)("products").where({ id: id });
         if (product) {
-            yield knex_1.db.raw(`
-            UPDATE products 
-            SET
-            id = "${newId || product.id}",
-            name = "${newName || product.name}",
-            price = ${isNaN(newPrice) ? product.price : newPrice},
-            description = "${newDescription || product.description}",
-            image_url = "${newImage_url || product.image_url}" 
-            WHERE id="${id}"
-            `);
+            const updateProduct = {
+                id: newId || product.id,
+                name: newName || product.name,
+                price: isNaN(newPrice) ? product.price : newPrice,
+                description: newDescription || product.description,
+                image_url: newImage_url || product.image_url
+            };
+            yield (0, knex_1.db)("products").update(updateProduct).where({ id: id });
             res.status(200).send("Produto atualizado com sucesso");
         }
         else {

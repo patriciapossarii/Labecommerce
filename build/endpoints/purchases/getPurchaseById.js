@@ -30,9 +30,7 @@ const getPurchaseById = (req, res) => __awaiter(void 0, void 0, void 0, function
                 res.status(400);
                 throw new Error("'id' da comprae inválido. Deve conter de 5 a 8 caracteres");
             }
-            const idPurchasetExists = yield knex_1.db.raw(`SELECT *
-            FROM purchases
-            WHERE id = "${id}";`);
+            const idPurchasetExists = yield (0, knex_1.db)("purchases").where({ id: id });
             if (idPurchasetExists.length === 0) {
                 res.status(404);
                 throw new Error("'id' da compra não encontrado.");

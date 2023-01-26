@@ -35,9 +35,7 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             res.status(400);
             throw new Error("'id' do produto deve ser informado.");
         }
-        const result = yield knex_1.db.raw(`SELECT *
-        FROM products
-        WHERE id = "${id}";`);
+        const result = yield (0, knex_1.db)("products").where({ id: id }).select("id", "name", "price", "description", "image_url as imageUrl");
         if (result.length === 0) {
             res.status(404);
             throw new Error("'id'do produto não encontrado.");

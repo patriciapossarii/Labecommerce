@@ -18,18 +18,16 @@ const getPurchasesByUserId = async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'id' do usuário inválido. Deve iniciar com 'user'")
             }
-            
+
             if (id.length < 5 || id.length > 8) {
                 res.status(400)
                 throw new Error("'id' do usuário inválido. Deve conter de 5 a 8 caracteres")
             }
 
 
-            const idUsertExists = await db.raw(`SELECT *
-            FROM users
-            WHERE id = "${id}";`)
-            console.log(idUsertExists)
-            if (idUsertExists.length === 0) {
+            const idUsertExists = await db("users").where({ id: id })
+
+            if (idUsertExists.length == 0) {
                 res.status(404)
                 throw new Error("'id' do usuário não encontrado.")
             }
@@ -38,9 +36,7 @@ const getPurchasesByUserId = async (req: Request, res: Response) => {
             throw new Error(" `id` do usuário deve ser informado.")
         }
 
-        const result = await db.raw(`SELECT *
-        FROM purchases
-        WHERE buyer = "${id}";`)
+        const result = await db("purchases").where({ buyer: id }).select("id","buyer","total_price as totalPrice","created_at as createdAt","paid")
 
         res.status(200).send(result)
     } catch (error) {

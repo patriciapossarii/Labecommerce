@@ -94,9 +94,14 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             res.status(400);
             throw new Error("'image_url' do produto deve ser informado.");
         }
-        yield knex_1.db.raw(`
-        INSERT INTO products(id, name, price, description, image_url)
-        VALUES("${id}","${name}", ${price}, "${description}","${image_url}")`);
+        const addProduct = {
+            id,
+            name,
+            price,
+            description,
+            image_url
+        };
+        yield (0, knex_1.db)("products").insert(addProduct);
         res.status(201).send("Produto cadastrado com sucesso");
     }
     catch (error) {

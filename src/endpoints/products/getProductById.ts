@@ -28,7 +28,7 @@ const getProductById = async (req: Request, res: Response) => {
             throw new Error("'id' do produto deve ser informado.")
         }
 
-        const result = await db("products").where({ id: id })
+        const result = await db("products").where({ id: id }).select("id","name","price","description","image_url as imageUrl")
         if (result.length === 0) {
             res.status(404)
             throw new Error("'id'do produto não encontrado.")

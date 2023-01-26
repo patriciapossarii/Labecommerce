@@ -23,12 +23,9 @@ const getPurchaseById = async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'id' da comprae inválido. Deve conter de 5 a 8 caracteres")
             }
+            const idPurchasetExists = await db("purchases").where({id:id})
 
-
-            const idPurchasetExists = await db.raw(`SELECT *
-            FROM purchases
-            WHERE id = "${id}";`)
-
+           
             if (idPurchasetExists.length === 0) {
                 res.status(404)
                 throw new Error("'id' da compra não encontrado.")
@@ -53,7 +50,7 @@ const getPurchaseById = async (req: Request, res: Response) => {
                 "u.email as email",
                 "u.name as name")
             .where("p.id", "=", id)
-        result1[0].isPaid === 0 ? result1[0].isPaid = false : result1[0].isPaid = true
+ //       result1[0].isPaid === 0 ? result1[0].isPaid = false : result1[0].isPaid = true
 
         const result2 = await db("purchases_products as pp")
         .innerJoin(
@@ -66,7 +63,7 @@ const getPurchaseById = async (req: Request, res: Response) => {
         "prod.name as name",
         "prod.price as price",
         "prod.description as description",
-        "prod.image_url as image_url",
+        "prod.image_url as imageUrl",
         "pp.quantity as quantity"
         ).where("pp.purchase_id", "=", id)
        
@@ -75,13 +72,13 @@ result2.forEach(value =>{sum +=value.price * value.quantity})
 
         let result3 = {
             purchaseId: result1[0].purchaseId,
+            buyerId: result1[0].buyerId,
+            buyerName: result1[0].name,
+            buyerEmail: result1[0].email,
             totalPrice: sum,
             createdAt: result1[0].createdAt,
-            isPaid: result1[0].isPaid,
-            buyerId: result1[0].buyerId,
-            email: result1[0].email,
-            name: result1[0].name,
-            productsList:result2
+            paid: result1[0].isPaid,        
+            products:result2
         }
         
         res.status(200).send(result3)

@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const knex_1 = require("../../database/knex");
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield knex_1.db.raw(`SELECT * FROM products;`);
+        const result = yield (0, knex_1.db)("products").select("id", "name", "price", "description", "image_url as imageUrl");
         res.status(200).send(result);
     }
     catch (error) {

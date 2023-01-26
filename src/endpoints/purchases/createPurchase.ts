@@ -5,9 +5,9 @@ import moment from 'moment'
 
 const createPurchase = async (req: Request, res: Response) => {
     try {
-        const { id, buyer, item } = req.body
+        const { id, buyer, products } = req.body
 
-        let productIdAndQuantity: TItem[] = item
+        let productIdAndQuantity: TItem[] = products
 
         if (id !== undefined) {
             if (typeof id !== "string") {
@@ -61,25 +61,25 @@ const createPurchase = async (req: Request, res: Response) => {
 
         let total = 0
         for (let i of productIdAndQuantity) {
-            const [product] = await db("products").where({ id: i.product_Id })
-            if (i.product_Id !== undefined) {
-                if (i.product_Id == ":id") {
+            const [product] = await db("products").where({ id: i.productId })
+            if (i.productId !== undefined) {
+                if (i.productId == ":id") {
                     res.status(400)
                     throw new Error("'id' do produto deve ser informado.")
                 }
-                if (typeof i.product_Id !== "string") {
+                if (typeof i.productId !== "string") {
                     res.status(400)
                     throw new Error("'id' do produto deve ser string.")
                 }
-                if (i.product_Id[0] != "p" || i.product_Id[1] != "r" || i.product_Id[2] != "o" || i.product_Id[3] != "d") {
+                if (i.productId[0] != "p" || i.productId[1] != "r" || i.productId[2] != "o" || i.productId[3] != "d") {
                     res.status(400)
                     throw new Error("'id' do produto inválido. Deve iniciar com 'prod'")
                 }
-                if (i.product_Id.length < 5 || i.product_Id.length > 8) {
+                if (i.productId.length < 5 || i.productId.length > 8) {
                     res.status(400)
                     throw new Error("'id' do produto inválido. Deve conter de 5 a 8 caracteres.")
                 }
-                const idProductExists = await db("products").where({ id: i.product_Id })
+                const idProductExists = await db("products").where({ id: i.productId })
                 if (idProductExists.length < 1) {
                     res.status(404)
                     throw new Error("'id' do produto  não  encontrado.")
@@ -107,7 +107,7 @@ const createPurchase = async (req: Request, res: Response) => {
             total += i.quantity * product.price
             let b: TPurchasesProducts = {
                 purchase_id: id,
-                product_id: i.product_Id,
+                product_id: i.productId,
                 quantity: i.quantity
             }
             purchaseProductId.push(b)

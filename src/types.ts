@@ -51,7 +51,7 @@ export type TPurchasesProducts = {
 
 
 export type TItem = {
-    product_Id:string,
+    productId:string,
     quantity:number
 }
 

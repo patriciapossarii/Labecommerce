@@ -3,7 +3,7 @@ import { db } from "../../database/knex";
 
 const getAllUsers =  async (req: Request, res: Response) => {
     try {
-        const result = await db("users")
+        const result = await db("users").select("id","name","email","password","created_at as createdAt")
         res.status(200).send(result)
     } catch (error) {
         console.log(error)
