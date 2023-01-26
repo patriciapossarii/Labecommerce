@@ -30,27 +30,23 @@ const deleteProductById = async (req: Request, res: Response) => {
             throw new Error(" 'id' deve ser informada.")
         }
 
-        const productIndex = await db.raw(`SELECT *
-        FROM products
-        WHERE id = "${id}";`)
 
+        const productIndex = await db("products").where({ id: id })
 
         if (productIndex.length === 0) {
             res.status(404)
             throw new Error("Produto não encontrado")
         }
 
-        const productInPurchase = await db.raw(`SELECT *
-        FROM purchases_products
-        WHERE product_id = "${id}";`)
+
+        const productInPurchase = await db("purchases_products").where({ product_id: id })
 
         if (productInPurchase.length > 0) {
             res.status(422)
             throw new Error(" 'id' cadastrado em uma 'purchases'")
         }
 
-        await db.raw(`DELETE FROM products
-      WHERE id = "${id}";`)
+        await db("products").del().where({ id: id })
         res.status(200).send("Produto apagado com sucesso")
 
     } catch (error) {

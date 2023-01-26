@@ -1,5 +1,6 @@
 import { Response, Request } from "express";
 import { db } from "../../database/knex";
+import { TProduct } from "../../types";
 
 const editProductById = async (req: Request, res: Response) => {
     try {
@@ -24,18 +25,14 @@ const editProductById = async (req: Request, res: Response) => {
                 throw new Error("`id`do produto inválido. Deve conter de 5 a 8 caracteres")
             }
 
-            const idOldExists = await db.raw(`SELECT *
-           FROM products
-           WHERE id = "${id}";`)
-
+            const idOldExists = await db("products").where({ id: id })
             if (!idOldExists) {
                 res.status(404)
                 throw new Error("'id' do produto não existe.")
             }
-            const idOthersProductstExists = await db.raw(`SELECT *
-            FROM products
-            WHERE id != "${id}" 
-            AND id = "${newId}";`)
+
+            const idOthersProductstExists = await db("products").where("id", "!=", id).andWhere("id", "=", newId)
+
             if (idOthersProductstExists) {
                 res.status(404)
                 throw new Error("'id' do produto já existente.")
@@ -90,21 +87,16 @@ const editProductById = async (req: Request, res: Response) => {
             }
         }
 
-        const [product] = await db.raw(`SELECT *
-        FROM products 
-        WHERE id = "${id}";`)
-
+        const [product] = await db("products").where({ id: id })
         if (product) {
-                       await db.raw(`
-            UPDATE products 
-            SET
-            id = "${newId || product.id}",
-            name = "${newName || product.name}",
-            price = ${isNaN(newPrice) ? product.price : newPrice},
-            description = "${newDescription || product.description}",
-            image_url = "${newImage_url || product.image_url}" 
-            WHERE id="${id}"
-            `)
+            const updateProduct: TProduct = {
+                id: newId || product.id,
+                name: newName || product.name,
+                price: isNaN(newPrice) ? product.price : newPrice,
+                description: newDescription || product.description,
+                image_url: newImage_url || product.image_url
+            }
+            await db("products").update(updateProduct).where({ id: id })
             res.status(200).send("Produto atualizado com sucesso")
         } else {
             res.status(404).send("Produto não encontrado")

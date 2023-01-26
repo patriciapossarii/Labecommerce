@@ -16,9 +16,7 @@ const getProductByName = async (req: Request, res: Response) => {
             }
         }
 
-        const result = await db.raw(`SELECT *
-       FROM products
-       WHERE name LIKE "%${q}%";`)
+      const result = await db("products").where("name","LIKE",`%${q}%`)
         res.status(200).send(result)
 
     } catch (error) {
