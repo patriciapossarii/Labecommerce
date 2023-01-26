@@ -73,6 +73,8 @@ COMPRAS
   - Possibilita buscar todas as compras realizadas de um usuário através do id do usuário válido*.
  - <b>Pesquisar compras por Id :</b> 
    - Possibilita buscar compras através do id de compra válido*.
+   - <b>Deletar compra por Id :</b> 
+   - Possibilita deletar uma compra através do id de compra válido*.
 
 
  válido*: corresponte algo que consta no BD. 
@@ -97,6 +99,7 @@ COMPRAS
   - Create Purchase
   - Get Purchases By User Id 
   - Get Purchase By Id
+  - Delete Purchase By Id
  
   <h2 id="bd"> Banco de Dados</h2>
 ![LabeCommerce](./src/assets/diagrama.png)
