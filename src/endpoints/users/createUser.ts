@@ -73,13 +73,13 @@ const createUser = async (req: Request, res: Response) => {
             throw new Error("'password' do usuário deve ser informado.")
         }
         var date = Date.now()
-        let formattedDate = (moment(date)).format('YYYY-MM-DD HH:mm:ss')
+        let dateNow = (moment(date)).format('YYYY-MM-DD HH:mm:ss')
         const addUser:TUser = {
             id,
             name,
             email,
             password,
-            created_at:formattedDate
+            created_at:dateNow
         }
 
         await db("users").insert(addUser)

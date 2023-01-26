@@ -1,10 +1,15 @@
 import { Response, Request } from "express";
 import { db } from "../../database/knex";
-import { TPurchase } from "../../types";
+import { TProduct, TPurchase, TPurchasesProducts, TItem } from "../../types";
+import getAllProducts from "../products/getAllProducts";
+import moment from 'moment'
 
 const createPurchase = async (req: Request, res: Response) => {
     try {
-        const { id, buyer, total_price } = req.body as TPurchase
+        const { id, buyer, item } = req.body
+
+        let productIdAndQuantity: TItem[] = item
+
 
         if (id !== undefined) {
             if (typeof id !== "string") {
@@ -19,10 +24,9 @@ const createPurchase = async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'id' da compra inválido. Deve conter de 5 a 8 caracteres")
             }
-            const idUserExists = await db.raw(`SELECT *
-            FROM purchases
-            WHERE id = "${id}";`)
-            if (idUserExists.length >= 1) {
+
+            const [idPurchaseExists] = await db("purchases").where({ id: id })
+            if (idPurchaseExists) {
                 res.status(404)
                 throw new Error("'id' da compra já existente.")
             }
@@ -45,9 +49,7 @@ const createPurchase = async (req: Request, res: Response) => {
                 res.status(400)
                 throw new Error("'id' do usuário inválido. Deve conter de 5 a 8 caracteres")
             }
-            const idUserExists = await db.raw(`SELECT *
-            FROM users
-            WHERE id = "${buyer}";`)
+            const idUserExists = await db("users").where({ id: buyer })
             if (idUserExists.length < 1) {
                 res.status(404)
                 throw new Error("'id' do usuário  não  encontrado.")
@@ -57,25 +59,78 @@ const createPurchase = async (req: Request, res: Response) => {
             throw new Error("'id' do usuário  deve ser informado.")
         }
 
+        let purchaseProductId = []
 
-        if (total_price !== undefined) {
-            if (total_price < 1) {
+        let total = 0
+        for (let i of productIdAndQuantity) {
+            const [product] = await db("products").where({ id: i.product_Id })
+            if (i.product_Id !== undefined) {
+                if (i.product_Id == ":id") {
+                    res.status(400)
+                    throw new Error("'id' do produto deve ser informado.")
+                }
+                if (typeof i.product_Id !== "string") {
+                    res.status(400)
+                    throw new Error("'id' do produto deve ser string.")
+                }
+                if (i.product_Id[0] != "p" || i.product_Id[1] != "r" || i.product_Id[2] != "o" || i.product_Id[3] != "d") {
+                    res.status(400)
+                    throw new Error("'id' do produto inválido. Deve iniciar com 'prod'")
+                }
+                if (i.product_Id.length < 5 || i.product_Id.length > 8) {
+                    res.status(400)
+                    throw new Error("'id' do produto inválido. Deve conter de 5 a 8 caracteres.")
+                }
+                const idProductExists = await db("products").where({ id: i.product_Id })
+                if (idProductExists.length < 1) {
+                    res.status(404)
+                    throw new Error("'id' do produto  não  encontrado.")
+                }
+            } else {
                 res.status(400)
-                throw new Error("'total_price ' do produto não pode ser vazio.")
+                throw new Error("'id' do produto deve ser informado.")
             }
-            if (typeof total_price !== "number") {
+
+
+            if (i.quantity !== undefined) {
+                if (typeof i.quantity !== "number") {
+                    res.status(400)
+                    throw new Error("'quantity'' do produto deve ser number.")
+                }
+                if (i.quantity <= 0) {
+                    res.status(400)
+                    throw new Error("'quantity' do produto inválido. Deve ser >=1.")
+                }
+            } else {
                 res.status(400)
-                throw new Error("'total_price' do produto deve ser number.")
+                throw new Error("'quantity' do produto deve ser informado.")
             }
-        } else {
-            res.status(400)
-            throw new Error("'total_price ' do produto deve ser informado.")
+
+            total += i.quantity * product.price
+            let b: TPurchasesProducts = {
+                purchase_id: id,
+                product_id: i.product_Id,
+                quantity: i.quantity
+            }
+            purchaseProductId.push(b)
         }
 
-        await db.raw(`
-        INSERT INTO purchases(id, buyer, total_price)
-        values("${id}", "${buyer}", ${total_price})
-        `)
+
+        var date = Date.now()
+        let dateNow = (moment(date)).format('YYYY-MM-DD HH:mm:ss')
+
+        const newPurchase: TPurchase = {
+            id,
+            buyer,
+            total_price: total,
+            created_at: dateNow,
+            paid: false
+        }
+
+
+        await db("purchases").insert(newPurchase)
+        await db("purchases_products").insert(purchaseProductId)
+
         res.status(201).send("Compra cadastrada com sucesso!")
     } catch (error) {
         console.log(error)
