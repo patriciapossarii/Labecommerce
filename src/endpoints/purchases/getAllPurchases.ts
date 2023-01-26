@@ -3,7 +3,7 @@ import { db } from "../../database/knex";
 
 const getAllPurchases = async (req: Request, res: Response) => {
     try {
-        const result = await db.raw(`SELECT * FROM purchases;`)
+        const result = await db("purchases")
         res.status(200).send(result)
     } catch (error) {
         console.log(error)
