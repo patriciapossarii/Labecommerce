@@ -1,7 +1,7 @@
 import { Response, Request } from "express";
 import { db } from "../../database/knex";
 
-const deleteUserById =  async (req: Request, res: Response) => {
+const deleteUserById = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
 
@@ -30,24 +30,15 @@ const deleteUserById =  async (req: Request, res: Response) => {
         }
 
 
-        const [userInPurchase] = await db.raw(`SELECT *
-        FROM purchases
-        WHERE buyer = "${id}";`)
-
-
+        const [userInPurchase] = await db("purchases").where({ buyer: id })
         if (userInPurchase) {
             res.status(422)
             throw new Error(" 'id' do usuário cadastrado em uma 'purchases'")
         }
 
-        const [userIndex] = await db.raw(`SELECT *
-        FROM users
-        WHERE id = "${id}";`)
-
+        const [userIndex] = await db("users").where({ id: id })
         if (userIndex) {
-            await db.raw(`DELETE FROM users 
-        WHERE id = "${id}";`)
-
+            await db("users").del().where({ id: id })
             res.status(200).send("Usuário apagado com sucesso")
         } else {
             res.send("User não encontrado")

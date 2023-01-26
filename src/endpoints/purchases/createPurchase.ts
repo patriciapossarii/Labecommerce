@@ -1,7 +1,6 @@
 import { Response, Request } from "express";
 import { db } from "../../database/knex";
-import { TProduct, TPurchase, TPurchasesProducts, TItem } from "../../types";
-import getAllProducts from "../products/getAllProducts";
+import { TPurchase, TPurchasesProducts, TItem } from "../../types";
 import moment from 'moment'
 
 const createPurchase = async (req: Request, res: Response) => {
@@ -9,7 +8,6 @@ const createPurchase = async (req: Request, res: Response) => {
         const { id, buyer, item } = req.body
 
         let productIdAndQuantity: TItem[] = item
-
 
         if (id !== undefined) {
             if (typeof id !== "string") {
@@ -115,7 +113,6 @@ const createPurchase = async (req: Request, res: Response) => {
             purchaseProductId.push(b)
         }
 
-
         var date = Date.now()
         let dateNow = (moment(date)).format('YYYY-MM-DD HH:mm:ss')
 
@@ -126,7 +123,6 @@ const createPurchase = async (req: Request, res: Response) => {
             created_at: dateNow,
             paid: false
         }
-
 
         await db("purchases").insert(newPurchase)
         await db("purchases_products").insert(purchaseProductId)

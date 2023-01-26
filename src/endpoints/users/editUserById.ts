@@ -1,5 +1,6 @@
 import { Response, Request } from "express";
 import { db } from "../../database/knex";
+import { TUser } from "../../types";
 
 
 const editUserById = async (req: Request, res: Response) => {
@@ -80,11 +81,12 @@ const editUserById = async (req: Request, res: Response) => {
         
         const [user] = await db("users").where({ id: id })
         if (user) {
-            const updateUser = {
+            const updateUser:TUser = {
                 id: newId || user.id,
                 name: newName || user.name,
                 email: newEmail || user.email,
-                password: newPassword || user.password
+                password: newPassword || user.password,
+                created_at: user.created_at
             }
             await db("users").update(updateUser).where({ id: id })
             res.status(200).send("Cadastro atualizado com sucesso")
