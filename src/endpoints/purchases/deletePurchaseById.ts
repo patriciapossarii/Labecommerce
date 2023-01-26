@@ -29,7 +29,7 @@ const deletePurchaseById = async (req: Request, res: Response) => {
         if (purchaseIndex) {
             await db("purchases_products").del().where({ purchase_id: id })
             await db("purchases").del().where({ id: id })
-            res.status(200).send("Purchase apagada com sucesso")
+            res.status(200).send("Pedido cancelado com sucesso")
         } else {
             res.send("purchase não encontrada")
         }
