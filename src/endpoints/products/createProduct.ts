@@ -4,7 +4,7 @@ import { TProduct } from "../../types";
 
 const createProduct = async (req: Request, res: Response) => {
     try {
-        const { id, name, price, description, image_url } = req.body as TProduct
+        const { id, name, price, description, image_url } = req.body
 
 
         if (id !== undefined) {
@@ -79,7 +79,7 @@ const createProduct = async (req: Request, res: Response) => {
             throw new Error("'description' do produto deve ser informado.")
         }
 
-        
+
         if (image_url !== undefined) {
             if (typeof image_url !== "string") {
                 res.status(400)
@@ -94,9 +94,15 @@ const createProduct = async (req: Request, res: Response) => {
             throw new Error("'image_url' do produto deve ser informado.")
         }
 
-        await db.raw(`
-        INSERT INTO products(id, name, price, description, image_url)
-        VALUES("${id}","${name}", ${price}, "${description}","${image_url}")`)
+        const addProduct: TProduct = {
+            id,
+            name,
+            price,
+            description,
+            image_url
+        }
+
+        await db("products").insert(addProduct)
 
         res.status(201).send("Produto cadastrado com sucesso")
     } catch (error) {
