@@ -10,6 +10,8 @@
 
 > <a href="#endpoints"> Endpoints</a>
 
+> <a href="#bd"> Banco de Dados</a>
+
 > <a href="#documentacao"> Documentação da API</a>
 
 
@@ -95,7 +97,8 @@ COMPRAS
   - Get Purchases By User Id 
   - Get Purchase By Id
  
-  
+  <h2 id="bd"> Banco de Dados</h2>
+![LabeCommerce](./src/assets/diagrama.png)
 
 
 <h2 id="documentacao"> Documentação da API</h2>
