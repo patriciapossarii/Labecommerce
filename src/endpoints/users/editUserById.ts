@@ -11,6 +11,11 @@ const editUserById = async (req: Request, res: Response) => {
         const newEmail = req.body.email
         const newPassword = req.body.password
 
+       
+
+            
+        
+
         if (newId !== undefined) {
             if (typeof newId !== "string") {
                 res.status(400)

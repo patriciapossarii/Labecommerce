@@ -11,12 +11,26 @@ const editProductById = async (req: Request, res: Response) => {
         const newDescription = req.body.description as string
         const newImageUrl = req.body.imageUrl as string
 
+        if (id !== undefined) {
+        if (typeof id !== "string") {
+            res.status(400)
+            throw new Error("'id' do produto deve ser string.")
+        }
+        if (id[0] != "p" || id[1] != "r" || id[2] != "o" || id[3] != "d") {
+            res.status(400)
+            throw new Error("'id' do produto inválido. Deve iniciar com 'prod'")
+        }
+        if (id.length < 5 || id.length > 8) {
+            res.status(400)
+            throw new Error("`id`do produto inválido. Deve conter de 5 a 8 caracteres")
+        }
+    }
         if (newId !== undefined) {
             if (typeof newId !== "string") {
                 res.status(400)
-                throw new Error("'id' deve ser string.")
+                throw new Error("'id' do produto deve ser string.")
             }
-            if (id[0] != "p" || id[1] != "r" || id[2] != "o" || id[3] != "d") {
+            if (newId[0] != "p" || newId[1] != "r" || newId[2] != "o" || newId[3] != "d") {
                 res.status(400)
                 throw new Error("'id' do produto inválido. Deve iniciar com 'prod'")
             }
@@ -99,7 +113,7 @@ const editProductById = async (req: Request, res: Response) => {
             await db("products").update(updateProduct).where({ id: id })
             res.status(200).send("Produto atualizado com sucesso")
         } else {
-            res.status(404).send("Produto não encontrado")
+            res.status(404).send("id do produto não encontrado")
         }
     } catch (error) {
         if (res.statusCode === 200) {
