@@ -26,26 +26,25 @@ export type TPurchase = {
     total_price: number,
     created_at: string,
     paid: boolean,
-
 }
 
 
 export type TPurchaseItem = {
-    id:string,
-    name:string
-    price:number,
-    description:string,
-    imageUrl:string,
-    quantity:number
+    id: string,
+    name: string
+    price: number,
+    description: string,
+    imageUrl: string,
+    quantity: number
 }
 export type TPurchaseDetail = {
     purchaseId: string,
     totalPrice: number,
     createdAt: string,
     isPaid: boolean,
-    buyerId:string,
-    email:string,
-    name:string,
+    buyerId: string,
+    email: string,
+    name: string,
     productsList: TPurchaseItem[]
 }
 
